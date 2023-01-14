@@ -348,7 +348,7 @@ const Category = (props) => {
                     <td className="text-uppercase">{value.codeCategory}</td>
                     <td className="">{value.nameCategory}</td>
                     <td className="">{value.detailCategory}</td>
-                    <td className="text-success">{value.status.nameStatus}</td>
+                    <td className="text-success text-center">{value.status.nameStatus}</td>
                     <td>{timeToString(value.createdAt)}</td>
                     <td>{timeToString(value.updatedAt)}</td>
                     <td className="text-center">
@@ -366,7 +366,7 @@ const Category = (props) => {
                         handleClick={handleClick}
                         isChecked={isCheck.includes(value._id)}
                         label={""}
-                      ></Checkbox>
+                      ></Checkbox>   
                     </td>
                   </tr>
                 ))
