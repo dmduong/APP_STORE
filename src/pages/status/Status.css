@@ -1,0 +1,8 @@
+.icon-edit:hover {
+    color: green;
+}
+
+.div-disable {
+    pointer-events: none;
+    opacity: 0.4;
+}

@@ -1,0 +1,23 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.App {
+  background-color: white;
+  height: 100%;
+}
+
+.custom-link {
+  text-decoration: none;
+  color: rgb(44, 44, 44);
+}
+
+.custom-link:hover {
+  color: rgb(44, 44, 44);
+}
+
+.custom-link-1 {
+  width: 100px;
+  background-color: red;
+}
