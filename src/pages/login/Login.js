@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { showToast } from "../../component/toast/Toast";
 import { useDispatch, useSelector } from "react-redux";
-import { showLoading, loginIn, act_setUser } from "../../redux/action";
+import { showLoading, loginIn, act_setUser, act_activeMenu } from "../../redux/action";
 import { showConfirm } from "../../component/confirm/Confirm";
 import { api } from "../../config/axios";
 import {
@@ -17,6 +17,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useCookies, removeCookie } from "react-cookie";
+import { getItem, setItem } from "../../config/utill";
 
 const Login = (props) => {
   const dispatch = useDispatch();
@@ -35,6 +36,14 @@ const Login = (props) => {
     });
   };
 
+  const listMenu = useSelector((state) => {
+    if (!getItem('listMenu')) {
+        return state.listMenu;
+    } else {
+        return getItem('listMenu')
+    }
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(showLoading(true));
@@ -49,6 +58,10 @@ const Login = (props) => {
       setCookie("user", response.data, { path: "/" });
       setCookie("refreshToken", response.resfreshToken, { path: "/" });
       dispatch(act_setUser(response.data));
+      const list = [...listMenu];
+      list[0].active = true;
+      setItem('listMenu', list);
+      dispatch(act_activeMenu(list));
       navigate("/dashboard", { replace: true });
       dispatch(showLoading(false));
     } else if (response.status == 401) {

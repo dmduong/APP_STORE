@@ -17,6 +17,8 @@ import {
   loginIn,
   logout,
   showLoading,
+  act_setToken,
+  act_setRefreshToken,
 } from "../src/redux/action";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -40,6 +42,9 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Spinners from "./component/spinner/Spinners";
 import Category from "./pages/category/Category";
 import Unit from "./pages/unit/Unit";
+import Menu from "./pages/menu/Menu";
+import { remoteItem } from "./config/utill";
+import Supplier from "./pages/supplier/Supplier";
 
 function App() {
   const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
@@ -80,10 +85,14 @@ function App() {
       if (response.status == 200) {
         setCookie("user", response.data, { path: "/" });
         dispatch(act_setUser(response.data));
+        dispatch(act_setToken(userToken));
+        dispatch(act_setRefreshToken(refreshToken));
         dispatch(showLoading(false));
       } else {
         dispatch(act_setUser({}));
         dispatch(showLoading(false));
+        dispatch(act_setToken(""));
+        dispatch(act_setRefreshToken(""));
       }
     };
 
@@ -103,6 +112,7 @@ function App() {
       setCookie("user", "", { path: "/" });
       setCookie("refreshToken", "", { path: "/" });
       dispatch(logout());
+      remoteItem("listMenu");
       navigate("/login");
       dispatch(showLoading(false));
       showToast("__SUCCESS_TYPE", res.messages);
@@ -120,6 +130,7 @@ function App() {
       setCookie("user", "", { path: "/" });
       setCookie("refreshToken", "", { path: "/" });
       dispatch(logout());
+      remoteItem("listMenu");
       navigate("/login");
       dispatch(showLoading(false));
       showToast("__SUCCESS_TYPE", res.messages);
@@ -184,21 +195,7 @@ function App() {
               </div>
               <div className="center-tabar">
                 <div style={{ paddingLeft: "5px", paddingRight: "10px" }}>
-                  <Link className="list-link" to={"/dashboard"}>
-                    Dashboard
-                  </Link>
-                  <Link className="list-link" to={"/status"}>
-                    Status
-                  </Link>
-                  <Link className="list-link" to={"/category"}>
-                    Category
-                  </Link>
-                  <Link className="list-link" to={"/unit"}>
-                    Unit
-                  </Link>
-                  <Link className="list-link" to={"/product"}>
-                    Products
-                  </Link>
+                  <Menu></Menu>
                 </div>
               </div>
             </div>
@@ -239,7 +236,7 @@ function App() {
                         <Nav.Link as={Link} className="custom-link" to={"/"}>
                           Notice
                         </Nav.Link>
-                                          {/* <Nav.Link href="#action2">Link</Nav.Link>
+                        {/* <Nav.Link href="#action2">Link</Nav.Link>
                         <NavDropdown title="Link" id="navbarScrollingDropdown">
                           <NavDropdown.Item href="#action3">
                             Action
@@ -314,6 +311,10 @@ function App() {
                     element={<Category></Category>}
                   ></Route>
                   <Route path="/unit" element={<Unit></Unit>}></Route>
+                  <Route
+                    path="/supplier"
+                    element={<Supplier></Supplier>}
+                  ></Route>
                   <Route
                     path="/login"
                     element={<Dashboard></Dashboard>}

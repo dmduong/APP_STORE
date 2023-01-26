@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "./Unit.css";
-import { api } from "../../config/axios";
+import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  showLoading,
-  act_setUnit,
-  act_setPagination,
-} from "../../redux/action";
 import { useNavigate } from "react-router-dom";
-import { useCookies, removeCookie } from "react-cookie";
+import { api } from "../../config/axios";
+import {
+  act_setPagination,
+  act_setSupplier,
+  showLoading,
+} from "../../redux/action";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -27,15 +26,19 @@ const headers = [
   },
   {
     with: "2px",
-    name: "Unit code",
+    name: "Supplier code",
   },
   {
     with: "",
-    name: "Name unit",
+    name: "Name supplier",
   },
   {
     with: "",
-    name: "Detail unit",
+    name: "Phone supplier",
+  },
+  {
+    with: "",
+    name: "Address supplier",
   },
   {
     with: "",
@@ -59,15 +62,34 @@ const headers = [
   },
 ];
 
-const Unit = (props) => {
-  const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
+const Supplier = () => {
   const dispatch = useDispatch();
+  const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
+  const navigate = useNavigate();
   const pagination = useSelector((state) => state.pagination);
-  const [lgShow, setLgShow] = useState(false);
-  const [lgShowEdit, setLgShowEdit] = useState(false);
-  const list = useSelector((state) => state.listUnit);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [lgShow, setLgShow] = useState(false);
+  const [readOnly, setReadOnly] = useState({
+    idSupplier: false,
+    codeSupplier: false,
+    nameSupplier: false,
+    phoneSupplier: false,
+    addressSupplier: false,
+    createdAt: false,
+    updatedAt: false,
+    storeName: false,
+    statusId: false,
+  });
+  const [text, setText] = useState({
+    codeSupplier: "",
+    nameSupplier: "",
+    phoneSupplier: "",
+    addressSupplier: "",
+    statusId: "",
+  });
+
   const userToken = useSelector((state) => {
     if (cookies.token != "") {
       return cookies.token;
@@ -75,53 +97,8 @@ const Unit = (props) => {
       return state.userToken;
     }
   });
-  const [status, setStatus] = useState([]);
 
-  const [readOnly, setReadOnly] = useState({
-    idUnit: false,
-    codeUnit: false,
-    nameUnit: false,
-    detailUnit: false,
-    createdAt: false,
-    updatedAt: false,
-    storeName: false,
-    status: false,
-  });
-
-  const [text, setText] = useState({
-    codeUnit: "",
-    nameUnit: "",
-    detailUnit: "",
-    status: "",
-  });
-
-  const [textEdit, setTextEdit] = useState({
-    idUnit: "",
-    codeUnit: "",
-    nameUnit: "",
-    detailUnit: "",
-    status: "",
-    createdAt: "",
-    updatedAt: "",
-    storeName: "",
-  });
-
-  const fnc_get_unit = async (token, pagination) => {
-    dispatch(showLoading(true));
-    const response = await api.axios_get_unit(token, pagination);
-    if (response.status === 200) {
-      const data = [...response.data];
-      dispatch(act_setUnit(data));
-      dispatch(act_setPagination(response.pagination));
-    }
-    dispatch(showLoading(false));
-  };
-
-  useEffect(() => {
-    fnc_get_unit(userToken, pagination);
-    get_status(userToken);
-  }, []);
-
+  console.log(text);
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
     setIsCheck(list.map((li) => li._id));
@@ -138,11 +115,39 @@ const Unit = (props) => {
     }
   };
 
+  const list = useSelector((state) => state.listSupplier);
+
+  const fnc_get_supplier = async (token, pagi) => {
+    const response = await api.axios_get_supplier(token, pagi);
+    if (response.status === 200) {
+      const dataNew = [...response.data.data];
+      dispatch(act_setSupplier(dataNew));
+      dispatch(act_setPagination(response.data.pagination));
+    }
+  };
+
+  const get_status = async (token) => {
+    const res = await api.axios_all_status(token);
+    if (res.status == 200) {
+      const dataNew = [...res.data];
+      setStatus(dataNew);
+    } else {
+      setStatus([]);
+    }
+  };
+
+  useEffect(() => {
+    fnc_get_supplier(userToken, pagination);
+    get_status(userToken);
+  }, []);
+
+  console.log(list);
+
   const handleChangePage = (pagi) => {
     dispatch(
       act_setPagination({ ...pagination, page: pagi.page, limit: pagi.limit })
     );
-    fnc_get_unit(userToken, {
+    fnc_get_supplier(userToken, {
       ...pagination,
       page: pagi.page,
       limit: pagi.limit,
@@ -152,17 +157,19 @@ const Unit = (props) => {
   const handelOpenModal = () => {
     setReadOnly({
       ...readOnly,
-      codeUnit: false,
-      nameUnit: false,
-      detailUnit: false,
-      status: false,
+      codeSupplier: false,
+      nameSupplier: false,
+      addressSupplier: false,
+      phoneSupplier: false,
+      statusId: false,
     });
     setText({
       ...text,
-      nameUnit: "",
-      codeUnit: "",
-      detailUnit: "",
-      status: "",
+      nameSupplier: "",
+      codeSupplier: "",
+      addressSupplier: "",
+      phoneSupplier: "",
+      statusId: "",
     });
     setLgShow(true);
   };
@@ -181,26 +188,16 @@ const Unit = (props) => {
     dispatch(showLoading(true));
     e.preventDefault();
     let data = { ...text };
-    const res = await api.axios_create_unit(userToken, data);
+    const res = await api.axios_create_supplier(userToken, data);
     dispatch(showLoading(false));
-    if (res.status == 200) {
+    if (res.status === 200) {
       setLgShow(false);
-      await fnc_get_unit(userToken, pagination);
+      await fnc_get_supplier(userToken, pagination);
       showToast("__SUCCESS_TYPE", res.messages);
-    } else if (res.status == 400) {
+    } else if (res.status === 400) {
       showToast("__ERROR_TYPE", res.messages);
     } else {
       showToast("__ERROR_TYPE", res.messages);
-    }
-  };
-
-  const get_status = async (token) => {
-    const res = await api.axios_all_status(token);
-    if (res.status == 200) {
-      const dataNew = [...res.data];
-      setStatus(dataNew);
-    } else {
-      setStatus([]);
     }
   };
 
@@ -219,9 +216,9 @@ const Unit = (props) => {
     const id = data[1];
     const token = data[0];
     dispatch(showLoading(true));
-    let res = await api.axios_delete_unit(token, id);
+    let res = await api.axios_delete_supplier(token, id);
     if (res.status == 200) {
-      await fnc_get_unit(token, pagination);
+      await fnc_get_supplier(token, pagination);
       setIsCheck([]);
       showToast("__SUCCESS_TYPE", res.messages);
     } else {
@@ -230,83 +227,12 @@ const Unit = (props) => {
     dispatch(showLoading(false));
   };
 
-  const edit_unit = async (token, id) => {
-    const res = await api.axios_edit_unit(token, id);
-    if (res.status == 200) {
-      const dataNew = { ...res.data };
-      setTextEdit({
-        ...textEdit,
-        idUnit: dataNew._id,
-        codeUnit: dataNew.codeUnit,
-        nameUnit: dataNew.nameUnit,
-        detailUnit: dataNew.detailUnit,
-        status: dataNew.status,
-        createdAt: timeToString(dataNew.createdAt),
-        updatedAt: timeToString(dataNew.updatedAt),
-        storeName:
-          dataNew.storeId.codeStore + " - " + dataNew.storeId.nameStore,
-      });
-    } else {
-      showToast("__ERROR_TYPE", res.messages);
-    }
-  };
-
-  const handleEdit = async (id) => {
-    dispatch(showLoading(true));
-    await edit_unit(userToken, id);
-    setReadOnly({
-      ...readOnly,
-      createdAt: true,
-      updatedAt: true,
-      storeName: true,
-      codeUnit: true,
-      nameUnit: false,
-      detailUnit: false,
-      status: false,
-    });
-    setLgShowEdit(true);
-    dispatch(showLoading(false));
-  };
-
-  const handleChangeTextEdit = (e) => {
-    var target = e.target;
-    var name = target.name;
-    var value = target.type === "checkbox" ? target.checked : target.value;
-    setTextEdit({
-      ...textEdit,
-      [name]: value,
-    });
-  };
-
-  const handleSubmitEdit = async (e) => {
-    e.preventDefault();
-    dispatch(showLoading(true));
-    let { nameUnit, detailUnit, status, idUnit } = textEdit;
-    let res = await api.axios_update_unit(userToken, idUnit, {
-      nameUnit,
-      detailUnit,
-      status,
-    });
-
-    if (res.status == 200) {
-      setLgShowEdit(false);
-      await fnc_get_unit(userToken, pagination);
-      showToast("__SUCCESS_TYPE", res.messages);
-    } else if (res.status == 400) {
-      showToast("__ERROR_TYPE", res.messages);
-    } else {
-      showToast("__ERROR_TYPE", res.messages);
-    }
-
-    dispatch(showLoading(false));
-  };
-
   return (
     <>
       <div className="p-1 col-md-12">
         <div className="mt-1 mb-1 p-2 border border-success rounded d-flex justify-content-between align-items-center">
           <div className="mt-1 mb-2">
-            <h5 className="text-success text-center mb-0">Unit manager</h5>
+            <h5 className="text-success text-center mb-0">Supplier manager</h5>
           </div>
           <div>
             <Button onClick={() => handelOpenModal()} variant="primary">
@@ -340,25 +266,26 @@ const Unit = (props) => {
                 list.map((value, index) => (
                   <tr key={value._id}>
                     <td className="text-center">{index + 1}</td>
-                    <td className="text-uppercase">{value.codeUnit}</td>
-                    <td className="">{value.nameUnit}</td>
-                    <td className="">{value.detailUnit}</td>
+                    <td className="text-uppercase">{value.codeSupplier}</td>
+                    <td className="">{value.nameSupplier}</td>
+                    <td className="">{value.phoneSupplier}</td>
+                    <td className="">{value.addressSupplier}</td>
                     <td className="text-success text-center">
-                      {value.status.nameStatus}
+                      {value.statusId ? value.statusId.nameStatus : ""}
                     </td>
                     <td>{timeToString(value.createdAt)}</td>
                     <td>{timeToString(value.updatedAt)}</td>
                     <td className="text-center">
                       <FiEdit
                         className="icon-edit"
-                        onClick={() => handleEdit(value._id)}
+                        // onClick={() => handleEdit(value._id)}
                       ></FiEdit>
                     </td>
                     <td className="d-flex justify-content-center align-items-center">
                       <Checkbox
                         key={value._id}
                         type="checkbox"
-                        name={"unit_" + value._id}
+                        name={"supplier_" + value._id}
                         id={value._id}
                         handleClick={handleClick}
                         isChecked={isCheck.includes(value._id)}
@@ -387,7 +314,7 @@ const Unit = (props) => {
                 <td colSpan={headers.length}>
                   <Pagination
                     data={list}
-                    url={"/unit"}
+                    url={"/supplier"}
                     pagination={pagination}
                     changePage={handleChangePage}
                   ></Pagination>
@@ -407,43 +334,56 @@ const Unit = (props) => {
         >
           <Modal.Header closeButton>
             <Modal.Title id="example-modal-sizes-title-lg">
-              Create unit
+              Create supplier
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form className="scroll-bar" onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>
-                  Unit code (<span className="text-danger"> * </span>)
+                  Supplier code (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Control
                   type="tetx"
-                  readOnly={readOnly.codeUnit}
-                  name="codeUnit"
-                  value={text.codeUnit}
+                  readOnly={readOnly.codeSupplier}
+                  name="codeSupplier"
+                  value={text.codeSupplier}
                   onChange={handleChangeText}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>
-                  Unit name (<span className="text-danger"> * </span>)
+                  Supplier name (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  readOnly={readOnly.nameUnit}
-                  name="nameUnit"
-                  value={text.nameUnit}
+                  readOnly={readOnly.nameSupplier}
+                  name="nameSupplier"
+                  value={text.nameSupplier}
+                  onChange={handleChangeText}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>
+                  Supplier phone (<span className="text-danger"> * </span>)
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  readOnly={readOnly.phoneSupplier}
+                  name="phoneSupplier"
+                  value={text.phoneSupplier}
                   onChange={handleChangeText}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Detail unit</Form.Label>
+                <Form.Label>Address category</Form.Label>
                 <Form.Control
-                  readOnly={readOnly.detailUnit}
-                  name="detailUnit"
-                  value={text.detailUnit}
+                  readOnly={readOnly.addressSupplier}
+                  name="addressSupplier"
+                  value={text.addressSupplier}
                   as="textarea"
                   onChange={handleChangeText}
                   rows={3}
@@ -455,11 +395,11 @@ const Unit = (props) => {
                   Status (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Select
-                  readOnly={readOnly.status}
+                  readOnly={readOnly.statusId}
                   onChange={handleChangeText}
                   aria-label="Default select example"
-                  name="status"
-                  value={text.status}
+                  name="statusId"
+                  value={text.statusId}
                 >
                   <option value="">Open this select menu</option>
                   {status.map((value, index) => (
@@ -479,7 +419,7 @@ const Unit = (props) => {
         </Modal>
       </>
 
-      <>
+      {/* <>
         <Modal
           size="lg"
           show={lgShowEdit}
@@ -488,7 +428,7 @@ const Unit = (props) => {
         >
           <Modal.Header closeButton>
             <Modal.Title id="example-modal-sizes-title-lg">
-              Edit unit
+              Edit category
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -505,35 +445,35 @@ const Unit = (props) => {
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>
-                  Unit code (<span className="text-danger"> * </span>)
+                  Category code (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Control
                   type="tetx"
-                  readOnly={readOnly.codeUnit}
-                  name="codeUnit"
-                  value={textEdit.codeUnit}
+                  readOnly={readOnly.codeCategory}
+                  name="codeCategory"
+                  value={textEdit.codeCategory}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>
-                  Unit name (<span className="text-danger"> * </span>)
+                  Category name (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  readOnly={readOnly.nameUnit}
-                  name="nameUnit"
-                  value={textEdit.nameUnit}
+                  readOnly={readOnly.nameCategory}
+                  name="nameCategory"
+                  value={textEdit.nameCategory}
                   onChange={handleChangeTextEdit}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Detail unit</Form.Label>
+                <Form.Label>Detail category</Form.Label>
                 <Form.Control
-                  readOnly={readOnly.detailUnit}
-                  name="detailUnit"
-                  value={textEdit.detailUnit}
+                  readOnly={readOnly.detailCategory}
+                  name="detailCategory"
+                  value={textEdit.detailCategory}
                   as="textarea"
                   onChange={handleChangeTextEdit}
                   rows={3}
@@ -585,9 +525,9 @@ const Unit = (props) => {
             </Form>
           </Modal.Body>
         </Modal>
-      </>
+      </> */}
     </>
   );
 };
 
-export default Unit;
+export default Supplier;

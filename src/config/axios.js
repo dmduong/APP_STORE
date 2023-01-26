@@ -228,6 +228,125 @@ const axios_update_category = async (token, id, data) => {
     });
 };
 
+//[get all category]
+const axios_get_unit = async (token, pagination) => {
+  let page = pagination.page;
+  let limit = pagination.limit;
+
+  return await axios
+    .get(domain.url_get_unit(page, limit), {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[create_category]
+const axios_create_unit = async (token, data) => {
+  return await axios
+    .post(domain.url_create_unit, data, {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[delete_status]
+const axios_delete_unit = async (token, id) => {
+  return await axios
+    .delete(domain.url_delete_unit(id), {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[create_category]
+const axios_edit_unit = async (token, id) => {
+  return await axios
+    .get(domain.url_edit_unit(id), {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[update_status]
+const axios_update_unit = async (token, id, data) => {
+  return await axios
+    .put(domain.url_update_unit(id), data, {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[get all category]
+const axios_get_supplier = async (token, pagination) => {
+  let page = pagination.page;
+  let limit = pagination.limit;
+
+  return await axios
+    .get(domain.url_get_supplier(page, limit), {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[create_category]
+const axios_create_supplier = async (token, data) => {
+  return await axios
+    .post(domain.url_create_supplier, data, {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[delete_status]
+const axios_delete_supplier = async (token, id) => {
+  return await axios
+    .delete(domain.url_delete_supplier(id), {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
 export const api = {
   axios_login: axios_login,
   axios_logout: axios_logout,
@@ -240,8 +359,16 @@ export const api = {
   axios_delete_status: axios_delete_status,
   axios_get_category: axios_get_category,
   axios_all_status: axios_all_status,
-  axios_create_category:axios_create_category,
-  axios_delete_category:axios_delete_category,
-  axios_edit_category:axios_edit_category,
-  axios_update_category:axios_update_category
+  axios_create_category: axios_create_category,
+  axios_delete_category: axios_delete_category,
+  axios_edit_category: axios_edit_category,
+  axios_update_category: axios_update_category,
+  axios_get_unit: axios_get_unit,
+  axios_create_unit: axios_create_unit,
+  axios_delete_unit: axios_delete_unit,
+  axios_edit_unit: axios_edit_unit,
+  axios_update_unit: axios_update_unit,
+  axios_get_supplier: axios_get_supplier,
+  axios_create_supplier: axios_create_supplier,
+  axios_delete_supplier: axios_delete_supplier,
 };

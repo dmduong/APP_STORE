@@ -5,7 +5,51 @@ import {
   SHOWLOADING,
   SETUSER,
   SETPAGINATION,
+  SETUNIT,
+  SETRESFRESHTOKEN,
+  SETTOKEN,
+  ACTIVEMENU,
+  SETSUPPLIER,
 } from "./actionType";
+
+const arr_menu = [
+  {
+    _id: 1,
+    name: "Dashboard",
+    link: "/dashboard",
+    active: false,
+  },
+  {
+    _id: 2,
+    name: "Status",
+    link: "/status",
+    active: false,
+  },
+  {
+    _id: 3,
+    name: "Category",
+    link: "/category",
+    active: false,
+  },
+  {
+    _id: 4,
+    name: "Unit",
+    link: "/unit",
+    active: false,
+  },
+  {
+    _id: 5,
+    name: "Supplier",
+    link: "/supplier",
+    active: false,
+  },
+  {
+    _id: 6,
+    name: "Products",
+    link: "/product",
+    active: false,
+  },
+];
 
 const initialState = {
   isLoading: false,
@@ -20,6 +64,9 @@ const initialState = {
     total: 0,
     dataOfPage: 0,
   },
+  listUnit: [],
+  listMenu: [...arr_menu],
+  listSupplier: [],
 };
 
 export const mainReducer = (state = initialState, action) => {
@@ -59,14 +106,17 @@ export const mainReducer = (state = initialState, action) => {
         ...state,
         user: action.payLoad ? action.payLoad : {},
       };
+    case SETTOKEN:
+      return {
+        ...state,
+        userToken: action.payLoad ? action.payLoad : "",
+      };
+    case SETRESFRESHTOKEN:
+      return {
+        ...state,
+        refreshToken: action.payLoad ? action.payLoad : "",
+      };
     case SETPAGINATION:
-
-      // let dataOfPage = action.payLoad.dataOfPage;
-      // let page = action.payLoad.page;
-      // if (dataOfPage == 0) {
-      //   page = page - 1;
-      // }
-      
       return {
         ...state,
         pagination: {
@@ -76,6 +126,24 @@ export const mainReducer = (state = initialState, action) => {
           total: action.payLoad ? action.payLoad.total : 0,
           dataOfPage: action.payLoad ? action.payLoad.dataOfPage : 0,
         },
+      };
+
+    case SETUNIT:
+      return {
+        ...state,
+        listUnit: [...action.payLoad],
+      };
+
+    case ACTIVEMENU:
+      return {
+        ...state,
+        listMenu: [...action.payLoad],
+      };
+
+    case SETSUPPLIER:
+      return {
+        ...state,
+        listSupplier: [...action.payLoad],
       };
 
     default:

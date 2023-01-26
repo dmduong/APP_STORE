@@ -1,0 +1,6 @@
+.node-active {
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    border-radius: 50%;
+}

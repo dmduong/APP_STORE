@@ -28,7 +28,7 @@ const Root = (props) => {
         hideProgressBar={false}
         newestOnTop
         transition={Slide}
-        limit={1}
+        limit={10}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss

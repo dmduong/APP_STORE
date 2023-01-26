@@ -18,7 +18,7 @@
     justify-content: start;
     align-items: center;
     padding: 5px;  
-    background-color: rgb(233, 89, 36);
+    background-color:rgb(204, 204, 204);
     height: 10%;
     transition: .5s all ease;
     opacity: 0;
@@ -55,12 +55,13 @@
     background-color: white;
     align-items: center;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     text-decoration: none;
     color: black;
     border-radius: 5px;
     margin-bottom: 5px;
+    padding: 0px 25px 0px 15px;
 }
 
 .list-link:hover {
@@ -75,7 +76,7 @@
 }
 
 .bottom-tabar {
-    background-color: rgb(233, 89, 36);
+    background-color: gray;
     height: 10%;
     width: 100%;
 }
@@ -131,23 +132,23 @@
 }
 
 .icon-open-tab {
-    background-color: rgb(143, 143, 143);
+    background-color: rgb(211, 211, 211);
     width: 40px;
     height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    color: white;
+    color: rgb(92, 243, 92);
 }
 
 .icon-close-tab {
-    background-color: green;
+    background-color: rgb(204, 204, 204);
     width: 40px;
     height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    color: white;
+    color: green;
 }
