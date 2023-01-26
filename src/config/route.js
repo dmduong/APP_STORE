@@ -44,4 +44,6 @@ export const domain = {
   `${Url}/${version}/supplier/getAll/${page}/${limit}`,
   url_create_supplier: `${Url}/${version}/supplier/store`,
   url_delete_supplier: (id) => `${Url}/${version}/supplier/delete/${id}`,
+  url_edit_supplier: (id) => `${Url}/${version}/supplier/${id}`,
+  url_update_supplier: (id) => `${Url}/${version}/supplier/update/${id}`,
 };

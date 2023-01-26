@@ -347,6 +347,35 @@ const axios_delete_supplier = async (token, id) => {
     });
 };
 
+//[create_category]
+const axios_edit_supplier = async (token, id) => {
+  return await axios
+    .get(domain.url_edit_supplier(id), {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
+//[update_status]
+const axios_update_supplier = async (token, id, data) => {
+  return await axios
+    .put(domain.url_update_supplier(id), data, {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
 export const api = {
   axios_login: axios_login,
   axios_logout: axios_logout,
@@ -371,4 +400,6 @@ export const api = {
   axios_get_supplier: axios_get_supplier,
   axios_create_supplier: axios_create_supplier,
   axios_delete_supplier: axios_delete_supplier,
+  axios_edit_supplier: axios_edit_supplier,
+  axios_update_supplier: axios_update_supplier,
 };

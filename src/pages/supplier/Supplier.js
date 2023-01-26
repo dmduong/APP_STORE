@@ -71,6 +71,7 @@ const Supplier = () => {
   const [isCheck, setIsCheck] = useState([]);
   const [status, setStatus] = useState([]);
   const [lgShow, setLgShow] = useState(false);
+  const [lgShowEdit, setLgShowEdit] = useState(false);
   const [readOnly, setReadOnly] = useState({
     idSupplier: false,
     codeSupplier: false,
@@ -90,6 +91,18 @@ const Supplier = () => {
     statusId: "",
   });
 
+  const [textEdit, setTextEdit] = useState({
+    idSupplier: "",
+    codeSupplier: "",
+    nameSupplier: "",
+    phoneSupplier: "",
+    addressSupplier: "",
+    statusId: "",
+    createdAt: "",
+    updatedAt: "",
+    storeName: "",
+  });
+
   const userToken = useSelector((state) => {
     if (cookies.token != "") {
       return cookies.token;
@@ -98,7 +111,6 @@ const Supplier = () => {
     }
   });
 
-  console.log(text);
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
     setIsCheck(list.map((li) => li._id));
@@ -140,8 +152,6 @@ const Supplier = () => {
     fnc_get_supplier(userToken, pagination);
     get_status(userToken);
   }, []);
-
-  console.log(list);
 
   const handleChangePage = (pagi) => {
     dispatch(
@@ -227,6 +237,81 @@ const Supplier = () => {
     dispatch(showLoading(false));
   };
 
+  const edit_supplier = async (token, id) => {
+    const res = await api.axios_edit_supplier(token, id);
+    if (res.status == 200) {
+      const dataNew = { ...res.data };
+      setTextEdit({
+        ...textEdit,
+        idSupplier: dataNew._id,
+        codeSupplier: dataNew.codeSupplier,
+        nameSupplier: dataNew.nameSupplier,
+        phoneSupplier: dataNew.phoneSupplier,
+        addressSupplier: dataNew.addressSupplier,
+        statusId: dataNew.statusId ? dataNew.statusId._id : 0,
+        createdAt: timeToString(dataNew.createdAt),
+        updatedAt: timeToString(dataNew.updatedAt),
+        storeName:
+          dataNew.storeId.codeStore + " - " + dataNew.storeId.nameStore,
+      });
+    } else {
+      showToast("__ERROR_TYPE", res.messages);
+    }
+  };
+
+  const handleEdit = async (id) => {
+    dispatch(showLoading(true));
+    await edit_supplier(userToken, id);
+    setReadOnly({
+      ...readOnly,
+      createdAt: true,
+      updatedAt: true,
+      storeName: true,
+      codeSupplier: true,
+      nameSupplier: false,
+      phoneSupplier: false,
+      addressSupplier: false,
+      statusId: false,
+    });
+    setLgShowEdit(true);
+    dispatch(showLoading(false));
+  };
+
+  const handleChangeTextEdit = (e) => {
+    var target = e.target;
+    var name = target.name;
+    var value = target.type === "checkbox" ? target.checked : target.value;
+    setTextEdit({
+      ...textEdit,
+      [name]: value,
+    });
+  };
+
+  const handleSubmitEdit = async (e) => {
+    e.preventDefault();
+    dispatch(showLoading(true));
+    let { nameSupplier, phoneSupplier, statusId, idSupplier, addressSupplier } =
+      textEdit;
+    let res = await api.axios_update_supplier(userToken, idSupplier, {
+      nameSupplier,
+      phoneSupplier,
+      addressSupplier,
+      statusId,
+    });
+
+    if (res.status == 200) {
+      setLgShowEdit(false);
+      await fnc_get_supplier(userToken, pagination);
+      showToast("__SUCCESS_TYPE", res.messages);
+    } else if (res.status == 400) {
+      showToast("__ERROR_TYPE", res.messages);
+    } else {
+      showToast("__ERROR_TYPE", res.messages);
+    }
+
+    dispatch(showLoading(false));
+  };
+
   return (
     <>
       <div className="p-1 col-md-12">
@@ -278,7 +363,7 @@ const Supplier = () => {
                     <td className="text-center">
                       <FiEdit
                         className="icon-edit"
-                        // onClick={() => handleEdit(value._id)}
+                        onClick={() => handleEdit(value._id)}
                       ></FiEdit>
                     </td>
                     <td className="d-flex justify-content-center align-items-center">
@@ -419,7 +504,7 @@ const Supplier = () => {
         </Modal>
       </>
 
-      {/* <>
+      <>
         <Modal
           size="lg"
           show={lgShowEdit}
@@ -428,7 +513,7 @@ const Supplier = () => {
         >
           <Modal.Header closeButton>
             <Modal.Title id="example-modal-sizes-title-lg">
-              Edit category
+              Edit supplier
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -445,35 +530,48 @@ const Supplier = () => {
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>
-                  Category code (<span className="text-danger"> * </span>)
+                  Supplier code (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Control
                   type="tetx"
-                  readOnly={readOnly.codeCategory}
-                  name="codeCategory"
-                  value={textEdit.codeCategory}
+                  readOnly={readOnly.codeSupplier}
+                  name="codeSupplier"
+                  value={textEdit.codeSupplier}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>
-                  Category name (<span className="text-danger"> * </span>)
+                  Supplier name (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  readOnly={readOnly.nameCategory}
-                  name="nameCategory"
-                  value={textEdit.nameCategory}
+                  readOnly={readOnly.nameSupplier}
+                  name="nameSupplier"
+                  value={textEdit.nameSupplier}
+                  onChange={handleChangeTextEdit}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>
+                  Supplier phone (<span className="text-danger"> * </span>)
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  readOnly={readOnly.phoneSupplier}
+                  name="phoneSupplier"
+                  value={textEdit.phoneSupplier}
                   onChange={handleChangeTextEdit}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Detail category</Form.Label>
+                <Form.Label>Address supplier</Form.Label>
                 <Form.Control
-                  readOnly={readOnly.detailCategory}
-                  name="detailCategory"
-                  value={textEdit.detailCategory}
+                  readOnly={readOnly.addressSupplier}
+                  name="addressSupplier"
+                  value={textEdit.addressSupplier}
                   as="textarea"
                   onChange={handleChangeTextEdit}
                   rows={3}
@@ -485,11 +583,11 @@ const Supplier = () => {
                   Status (<span className="text-danger"> * </span>)
                 </Form.Label>
                 <Form.Select
-                  readOnly={readOnly.status}
+                  readOnly={readOnly.statusId}
                   onChange={handleChangeTextEdit}
                   aria-label="Default select example"
-                  name="status"
-                  value={textEdit.status}
+                  name="statusId"
+                  value={textEdit.statusId}
                 >
                   <option value="">Open this select menu</option>
                   {status.map((value, index) => (
@@ -525,7 +623,7 @@ const Supplier = () => {
             </Form>
           </Modal.Body>
         </Modal>
-      </> */}
+      </>
     </>
   );
 };
