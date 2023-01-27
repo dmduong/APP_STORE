@@ -10,6 +10,7 @@ import {
   SETTOKEN,
   ACTIVEMENU,
   SETSUPPLIER,
+  SETPRODUCT,
 } from "./actionType";
 
 const arr_menu = [
@@ -67,6 +68,7 @@ const initialState = {
   listUnit: [],
   listMenu: [...arr_menu],
   listSupplier: [],
+  listProduct: [],
 };
 
 export const mainReducer = (state = initialState, action) => {
@@ -144,6 +146,12 @@ export const mainReducer = (state = initialState, action) => {
       return {
         ...state,
         listSupplier: [...action.payLoad],
+      };
+
+    case SETPRODUCT:
+      return {
+        ...state,
+        listProduct: [...action.payLoad],
       };
 
     default:

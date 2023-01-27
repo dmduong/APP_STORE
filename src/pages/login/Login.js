@@ -5,7 +5,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { showToast } from "../../component/toast/Toast";
 import { useDispatch, useSelector } from "react-redux";
-import { showLoading, loginIn, act_setUser, act_activeMenu } from "../../redux/action";
+import {
+  showLoading,
+  loginIn,
+  act_setUser,
+  act_activeMenu,
+} from "../../redux/action";
 import { showConfirm } from "../../component/confirm/Confirm";
 import { api } from "../../config/axios";
 import {
@@ -37,10 +42,10 @@ const Login = (props) => {
   };
 
   const listMenu = useSelector((state) => {
-    if (!getItem('listMenu')) {
-        return state.listMenu;
+    if (!getItem("listMenu")) {
+      return state.listMenu;
     } else {
-        return getItem('listMenu')
+      return getItem("listMenu");
     }
   });
 
@@ -60,7 +65,7 @@ const Login = (props) => {
       dispatch(act_setUser(response.data));
       const list = [...listMenu];
       list[0].active = true;
-      setItem('listMenu', list);
+      setItem("listMenu", list);
       dispatch(act_activeMenu(list));
       navigate("/dashboard", { replace: true });
       dispatch(showLoading(false));
@@ -107,6 +112,7 @@ const Login = (props) => {
               >
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                  className="text-input-css"
                   type="password"
                   name="password"
                   onChange={handleChange}

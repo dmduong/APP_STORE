@@ -24,7 +24,7 @@ const Menu = () => {
       }
     });
     setItem("listMenu", list);
-    dispatch(act_activeMenu(list));
+    // dispatch(act_activeMenu(list));
   };
 
   return (

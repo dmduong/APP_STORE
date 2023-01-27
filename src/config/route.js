@@ -1,5 +1,5 @@
 export const Url = "http://localhost:8000";
-export const version = 'api/v1';
+export const version = "api/v1";
 
 export const header = (tokenUser, refreshToken) => {
   return {
@@ -31,19 +31,23 @@ export const domain = {
     `${Url}/${version}/inventory/category/getAll/${page}/${limit}`,
   url_all_status: `${Url}/${version}/inventory/status/all`,
   url_create_category: `${Url}/${version}/inventory/category/store`,
-  url_delete_category: (id) => `${Url}/${version}/inventory//category/delete/${id}`,
+  url_delete_category: (id) =>
+    `${Url}/${version}/inventory//category/delete/${id}`,
   url_edit_category: (id) => `${Url}/${version}/inventory/category/${id}`,
-  url_update_category: (id) => `${Url}/${version}/inventory/category/update/${id}`,
+  url_update_category: (id) =>
+    `${Url}/${version}/inventory/category/update/${id}`,
   url_get_unit: (page, limit) =>
-  `${Url}/${version}/inventory/unit/getAll/${page}/${limit}`,
+    `${Url}/${version}/inventory/unit/getAll/${page}/${limit}`,
   url_create_unit: `${Url}/${version}/inventory/unit/store`,
   url_delete_unit: (id) => `${Url}/${version}/inventory/unit/delete/${id}`,
   url_edit_unit: (id) => `${Url}/${version}/inventory/unit/${id}`,
   url_update_unit: (id) => `${Url}/${version}/inventory/unit/update/${id}`,
   url_get_supplier: (page, limit) =>
-  `${Url}/${version}/supplier/getAll/${page}/${limit}`,
+    `${Url}/${version}/supplier/getAll/${page}/${limit}`,
   url_create_supplier: `${Url}/${version}/supplier/store`,
   url_delete_supplier: (id) => `${Url}/${version}/supplier/delete/${id}`,
   url_edit_supplier: (id) => `${Url}/${version}/supplier/${id}`,
   url_update_supplier: (id) => `${Url}/${version}/supplier/update/${id}`,
+  url_get_product: (page, limit) =>
+    `${Url}/${version}/inventory/product/getAll/${page}/${limit}`,
 };

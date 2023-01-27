@@ -71,7 +71,7 @@ const Category = (props) => {
 
   const [list, setList] = useState([]);
   const [status, setStatus] = useState([]);
-  const pagination = useSelector(state => state.pagination);
+  const pagination = useSelector((state) => state.pagination);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
   const [lgShow, setLgShow] = useState(false);
@@ -134,7 +134,8 @@ const Category = (props) => {
     },
     [dispatch],
     [list],
-    [pagination], [lgShow]
+    [pagination],
+    [lgShow]
   );
 
   const handleSelectAll = (e) => {
@@ -348,7 +349,9 @@ const Category = (props) => {
                     <td className="text-uppercase">{value.codeCategory}</td>
                     <td className="">{value.nameCategory}</td>
                     <td className="">{value.detailCategory}</td>
-                    <td className="text-success text-center">{value.status.nameStatus}</td>
+                    <td className="text-success text-center">
+                      {value.status.nameStatus}
+                    </td>
                     <td>{timeToString(value.createdAt)}</td>
                     <td>{timeToString(value.updatedAt)}</td>
                     <td className="text-center">
@@ -366,7 +369,7 @@ const Category = (props) => {
                         handleClick={handleClick}
                         isChecked={isCheck.includes(value._id)}
                         label={""}
-                      ></Checkbox>   
+                      ></Checkbox>
                     </td>
                   </tr>
                 ))

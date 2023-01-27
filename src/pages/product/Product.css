@@ -1,0 +1,19 @@
+.box-image .image-item {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  margin: 5px;
+  border: 1px solid gray;
+}
+
+.content-image {
+  max-height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 250px;
+  height: auto;
+  overflow-y: auto;
+}

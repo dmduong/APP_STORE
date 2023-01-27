@@ -10,6 +10,7 @@ import {
   SETTOKEN,
   ACTIVEMENU,
   SETSUPPLIER,
+  SETPRODUCT,
 } from "./actionType";
 
 export const loginIn = (token, refreshToken) => ({
@@ -65,4 +66,9 @@ export const act_activeMenu = (active) => ({
 export const act_setSupplier = (supplier) => ({
   type: SETSUPPLIER,
   payLoad: supplier,
+});
+
+export const act_setProduct = (product) => ({
+  type: SETPRODUCT,
+  payLoad: product,
 });
