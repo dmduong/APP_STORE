@@ -46,6 +46,8 @@ import Menu from "./pages/menu/Menu";
 import { remoteItem } from "./config/utill";
 import Supplier from "./pages/supplier/Supplier";
 import Product from "./pages/product/Product";
+import AddProduct from "./pages/product/AddProduct";
+import Index from "./pages/product/Index";
 
 function App() {
   const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
@@ -316,7 +318,11 @@ function App() {
                     path="/supplier"
                     element={<Supplier></Supplier>}
                   ></Route>
-                  <Route path="/product" element={<Product></Product>}></Route>
+                  <Route path="/product" element={<Index></Index>}>
+                    <Route path="" element={<Product />} />{" "}
+                    <Route path="add" element={<AddProduct />} />{" "}
+                    <Route path="edit/:id" element={<AddProduct />} />{" "}
+                  </Route>
                   <Route
                     path="/login"
                     element={<Dashboard></Dashboard>}

@@ -50,4 +50,5 @@ export const domain = {
   url_update_supplier: (id) => `${Url}/${version}/supplier/update/${id}`,
   url_get_product: (page, limit) =>
     `${Url}/${version}/inventory/product/getAll/${page}/${limit}`,
+  url_create_product: `${Url}/${version}/inventory/product/store`,
 };

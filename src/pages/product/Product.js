@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./Product.css";
-import { Image, Table } from "react-bootstrap";
+import { Button, Image, Table } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
 import Checkbox from "../../component/checkbox/Checkbox";
 import { Pagination } from "../../component/pagination/Pagination";
 import { api } from "../../config/axios";
@@ -143,13 +143,13 @@ const Product = () => {
       <div className="p-1 col-md-12">
         <div className="mt-1 mb-1 p-2 border border-success rounded d-flex justify-content-between align-items-center">
           <div className="mt-1 mb-2">
-            <h5 className="text-success text-center mb-0">Category manager</h5>
+            <h5 className="text-success text-center mb-0">Product manager</h5>
           </div>
           <div>
-            {/* <Button onClick={() => handelOpenModal()} variant="primary">
-              Create
-            </Button>{" "}
-            <Button variant="danger" onClick={handleDelete}>
+            <Link to="/product/add">
+              <Button variant="primary">Create</Button>
+            </Link>{" "}
+            {/* <Button variant="danger" onClick={handleDelete}>
               Delete
             </Button>{" "} */}
           </div>

@@ -393,6 +393,21 @@ const axios_get_product = async (token, pagination) => {
     });
 };
 
+//[create_category]
+const axios_create_product = async (token, data) => {
+  console.log(data);
+  return await axios
+    .post(domain.url_create_product, data, {
+      headers: header(token),
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showToast("__ERROR_TYPE", error.message);
+    });
+};
+
 export const api = {
   axios_login: axios_login,
   axios_logout: axios_logout,
@@ -420,4 +435,5 @@ export const api = {
   axios_edit_supplier: axios_edit_supplier,
   axios_update_supplier: axios_update_supplier,
   axios_get_product: axios_get_product,
+  axios_create_product: axios_create_product,
 };
