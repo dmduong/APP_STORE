@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./Pagination.css";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import Select from "../select/Select";
 
 export const Pagination = (props) => {
   const navigate = useNavigate();
   // const [pagination, setPagination] = useState(props.pagination);
   let { page, pages, limit, total, dataOfPage } = props.pagination;
-  const {data} = props;
+  const { data } = props;
   //get params in url page
   let page_url_params = page;
   let limit_url_params = limit;
@@ -60,9 +61,34 @@ export const Pagination = (props) => {
     });
   };
 
+  const handleChange = (limit) => {
+    props.changePage({
+      page: 0,
+      limit: limit,
+    });
+    setActive(1);
+  };
+
   return (
     <div className="pagination-content">
-      <div className="pagination-left">{total} items</div>
+      <div className="pagination-left">
+        <div className="total-items">{total} items</div>
+        <div className="pl-1">
+          <Select
+            name={"cmb_set_limit"}
+            id={"cmb_set_limit"}
+            data={Array(
+              { id: 1, name: 5, value: 5 },
+              { id: 2, name: 10, value: 10 },
+              { id: 3, name: 20, value: 20 }
+            )}
+            values={5}
+            handleChange={handleChange}
+            size={"sm"}
+            disabled={false}
+          ></Select>
+        </div>
+      </div>
       <div className="pagination-right">
         {data.length > 0 ? (
           <>

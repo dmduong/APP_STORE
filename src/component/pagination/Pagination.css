@@ -7,6 +7,9 @@
 .pagination-left {
     margin-left: 10px;
     font-weight: bolder;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .pagination-right {
@@ -70,4 +73,7 @@
 .div-disable {
     pointer-events: none;
     opacity: 0.4;
+}
+.total-items {
+    width: 70px;
 }

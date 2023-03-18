@@ -1,0 +1,28 @@
+.place-holder {
+    height: auto;
+    cursor: progress;
+}
+
+.items-place-holder-header {
+    height: auto;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: red !important;
+}
+
+.items-place-holder {
+    height: auto;
+    border-radius: 5px;
+
+}
+
+.table-responsive {
+    overflow-y: hidden;
+}
+
+.items-con {
+    height: auto;
+    width: 100%;
+}

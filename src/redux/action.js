@@ -11,6 +11,9 @@ import {
   ACTIVEMENU,
   SETSUPPLIER,
   SETPRODUCT,
+  SETISCHECK,
+  SETISCHECKALL,
+  SETHID,
 } from "./actionType";
 
 export const loginIn = (token, refreshToken) => ({
@@ -71,4 +74,19 @@ export const act_setSupplier = (supplier) => ({
 export const act_setProduct = (product) => ({
   type: SETPRODUCT,
   payLoad: product,
+});
+
+export const act_setIsCheck = (value) => ({
+  type: SETISCHECK,
+  payLoad: value,
+});
+
+export const act_setIsCheckAll = (value) => ({
+  type: SETISCHECKALL,
+  payLoad: value,
+});
+
+export const atc_setId = (h_id) => ({
+  type: SETHID,
+  payLoad: h_id,
 });

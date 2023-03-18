@@ -39,3 +39,11 @@ export const formatCash = (str, dv = "") => {
 
   return _price + " (" + dv + ")";
 };
+
+export const newArray = (size) => {
+  var x = [];
+  for (var i = 0; i < size; ++i) {
+    x[i] = i;
+  }
+  return x;
+};

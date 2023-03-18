@@ -83,17 +83,19 @@ function App() {
 
   useEffect(() => {
     const get_user = async (token) => {
-      dispatch(showLoading(true));
+      // dispatch(showLoading(true));
       const response = await api.axios_infor_user(token);
       if (response.status == 200) {
         setCookie("user", response.data, { path: "/" });
+        document.title = response.data.storeId.nameStore;
         dispatch(act_setUser(response.data));
         dispatch(act_setToken(userToken));
         dispatch(act_setRefreshToken(refreshToken));
-        dispatch(showLoading(false));
+        // dispatch(showLoading(false));
       } else {
         dispatch(act_setUser({}));
-        dispatch(showLoading(false));
+        document.title = "Thông tin tạm thời chưa có.";
+        // dispatch(showLoading(false));
         dispatch(act_setToken(""));
         dispatch(act_setRefreshToken(""));
       }
@@ -184,7 +186,11 @@ function App() {
               <div className="top-tabar" style={{ opacity: open ? "1" : "0" }}>
                 <div>
                   {user ? (
-                    <img src={Url + user.storeId.imageStore[0].nameImage} />
+                    user.storeId.imageStore.length > 0 ? (
+                      <img src={Url + user.storeId.imageStore[0].nameImage} />
+                    ) : (
+                      <img />
+                    )
                   ) : (
                     <Spinner></Spinner>
                   )}
@@ -350,7 +356,7 @@ function App() {
             </div>
           </>
         ) : (
-          <div>Roongxs</div>
+          <div></div>
         )}
       </div>
     </div>

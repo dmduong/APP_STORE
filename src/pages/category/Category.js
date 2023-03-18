@@ -105,7 +105,7 @@ const Category = (props) => {
   });
 
   const getCategory = async (token, pagination) => {
-    dispatch(showLoading(true));
+    // dispatch(showLoading(true));
     const res = await api.axios_get_category(token, pagination);
     if (res.status == 200) {
       setList(res.data);
@@ -114,7 +114,7 @@ const Category = (props) => {
       setList([]);
       dispatch(act_setPagination(res.pagination));
     }
-    dispatch(showLoading(false));
+    // dispatch(showLoading(false));
   };
 
   const get_status = async (token) => {
@@ -130,7 +130,7 @@ const Category = (props) => {
   useEffect(
     () => {
       getCategory(userToken, pagination);
-      get_status(userToken);
+      // get_status(userToken);
     },
     [dispatch],
     [list],
@@ -154,7 +154,8 @@ const Category = (props) => {
     }
   };
 
-  const handelOpenModal = () => {
+  const handelOpenModal = async () => {
+    await get_status(userToken);
     setReadOnly({
       ...readOnly,
       codeCategory: false,

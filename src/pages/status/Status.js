@@ -11,7 +11,11 @@ import { showToast } from "../../component/toast/Toast";
 import { timeToString } from "../../config/utill";
 import Modal from "react-bootstrap/Modal";
 import { FiEdit } from "react-icons/fi";
-import { showLoading } from "../../redux/action";
+import {
+  act_setIsCheck,
+  act_setIsCheckAll,
+  showLoading,
+} from "../../redux/action";
 import Spinners from "../../component/spinner/Spinners";
 import { showConfirm } from "../../component/confirm/Confirm";
 import { Pagination } from "../../component/pagination/Pagination";
@@ -22,39 +26,11 @@ import {
   createSearchParams,
   useSearchParams,
 } from "react-router-dom";
-
-const headers = [
-  {
-    with: "2px",
-    name: "Stt",
-  },
-  {
-    with: "2px",
-    name: "Status code",
-  },
-  {
-    with: "",
-    name: "Name status",
-  },
-  {
-    with: "",
-    name: "Create time",
-  },
-  {
-    name: "Update time",
-    with: "",
-  },
-  {
-    name: "Edit",
-    with: "2px",
-  },
-  {
-    name: "Select",
-    with: "2px",
-  },
-];
+import ListNormal from "../../component/List/ListNormal";
+import Placeholders from "../../component/placeholders/Placeholders";
 
 const Status = (props) => {
+  const isCheck = useSelector((state) => state.objectsValue.isCheck);
   const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
   const userToken = useSelector((state) => {
     if (cookies.token != "") {
@@ -83,10 +59,9 @@ const Status = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page_url_params = searchParams.get("page");
   const limit_url_params = searchParams.get("limit");
-  const [isCheckAll, setIsCheckAll] = useState(false);
   const dispatch = useDispatch();
-  const [isCheck, setIsCheck] = useState([]);
-  const [list, setList] = useState([]);
+  const [list, setList] = useState([[], []]);
+  const [loading, setLoading] = useState(true);
   const [lgShow, setLgShow] = useState(false);
   const [lgShowEdit, setLgShowEdit] = useState(false);
   const [text, setText] = useState({
@@ -132,13 +107,19 @@ const Status = (props) => {
 
   const get_status = async (token, pagination) => {
     const res = await api.axios_get_status(token, pagination);
+    console.log(res.data[0].length, 3);
     if (res.status == 200) {
       const dataNew = [...res.data];
+
       setPagination(res.pagination);
       setList(dataNew);
     } else {
-      showToast("__ERROR_TYPE", res.messages);
+      const dataNew = [...res.data];
+      console.log(dataNew[0].length, 4);
+      setList(dataNew);
+      // showToast("__ERROR_TYPE", res.messages);
     }
+    setLoading(false);
   };
 
   const edit_status = async (token, id) => {
@@ -163,22 +144,6 @@ const Status = (props) => {
   useEffect(() => {
     get_status(userToken, pagination);
   }, [dispatch]);
-
-  const handleSelectAll = (e) => {
-    setIsCheckAll(!isCheckAll);
-    setIsCheck(list.map((li) => li._id));
-    if (isCheckAll) {
-      setIsCheck([]);
-    }
-  };
-
-  const handleClick = (e) => {
-    const { id, checked } = e.target;
-    setIsCheck([...isCheck, id]);
-    if (!checked) {
-      setIsCheck(isCheck.filter((item) => item !== id));
-    }
-  };
 
   const handleChangeText = (e) => {
     var target = e.target;
@@ -266,13 +231,14 @@ const Status = (props) => {
     if (isCheck.length <= 0 || isCheck.length >= 2) {
       showToast("__WARNING_TYPE", "Please, select one item !");
     } else {
-      showConfirm("Warning", "Are you sure delete it ?", deleteItems, [
+      showConfirm("Xác nhận !", "Are you sure delete it ?", deleteItems, [
         userToken,
         isCheck[0],
       ]);
     }
   };
 
+  console.log(list, 6);
   const deleteItems = async (data) => {
     const id = data[1];
     const token = data[0];
@@ -280,7 +246,8 @@ const Status = (props) => {
     let res = await api.axios_delete_status(token, id);
     if (res.status == 200) {
       await get_status(token, pagination);
-      setIsCheck([]);
+      dispatch(act_setIsCheck([]));
+      dispatch(act_setIsCheckAll(false));
       showToast("__SUCCESS_TYPE", res.messages);
     } else {
       showToast("__ERROR_TYPE", res.messages);
@@ -298,9 +265,9 @@ const Status = (props) => {
 
   return (
     <div className="p-1 col-md-12">
-      <div className="mt-1 mb-1 p-2 border border-success rounded d-flex justify-content-between align-items-center">
+      <div className="mt-1 mb-1 p-2 border rounded d-flex justify-content-between align-items-center">
         <div className="mt-1 mb-2">
-          <h5 className="text-success text-center mb-0">Status manager</h5>
+          <h5 className="text-dark text-center mb-0">Status manager</h5>
         </div>
         <div>
           <Button onClick={() => handelOpenModal()} variant="primary">
@@ -312,79 +279,32 @@ const Status = (props) => {
         </div>
       </div>
 
-      <div className="mt-1 mb-1 border border-success rounded">
-        <Table striped bordered hover responsive className="mb-0">
-          <thead>
-            <tr>
-              {headers.map((header, index) => (
-                <th key={index} className="text-center" width={header.width}>
-                  {header.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {list.length <= 0 ? (
-              <tr>
-                <td colSpan={headers.length} align="center">
-                  {/* <Spinners></Spinners> */}Data does not exist
-                </td>
-              </tr>
-            ) : (
-              list.map((value, index) => (
-                <tr key={value._id}>
-                  <td className="text-center">{index + 1}</td>
-                  <td className="text-uppercase">{value.codeStatus}</td>
-                  <td className="text-success">{value.nameStatus}</td>
-                  <td>{timeToString(value.createdAt)}</td>
-                  <td>{timeToString(value.updatedAt)}</td>
-                  <td className="text-center">
-                    <FiEdit
-                      className="icon-edit"
-                      onClick={() => handleEdit(value._id)}
-                    ></FiEdit>
-                  </td>
-                  <td className="d-flex justify-content-center align-items-center">
-                    <Checkbox
-                      key={value._id}
-                      type="checkbox"
-                      name={"status_" + value._id}
-                      id={value._id}
-                      handleClick={handleClick}
-                      isChecked={isCheck.includes(value._id)}
-                      label={""}
-                    ></Checkbox>
-                  </td>
-                </tr>
-              ))
-            )}
-            <tr>
-              <td colSpan={headers.length - 1} align="center">
-                Select all items
-              </td>
-              <td className="d-flex justify-content-center align-items-center">
-                <Checkbox
-                  type="checkbox"
-                  name="selectAll"
-                  id="selectAll"
-                  handleClick={handleSelectAll}
-                  isChecked={isCheckAll}
-                  label={""}
-                ></Checkbox>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={headers.length}>
-                <Pagination
-                  data={list}
-                  url={"/status"}
-                  pagination={pagination}
-                  changePage={handleChangePage}
-                ></Pagination>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+      <div className="mt-1 mb-1 border rounded">
+        {loading ? (
+          <Placeholders
+            type={"table"}
+            numberCols={6}
+            numberRows={6}
+            styleCustom={{
+              background: "rgb(224, 224, 224)",
+              color: "rgb(224, 224, 224)",
+            }}
+          ></Placeholders>
+        ) : (
+          <ListNormal
+            name={"status"}
+            data={list}
+            pagination={pagination}
+            changePages={handleChangePage}
+            hide_column={new Array("_id")}
+            customColumn={{
+              select_column: true,
+              edit_column: true,
+              stt_column: true,
+            }}
+            onClickEdit={handleEdit}
+          ></ListNormal>
+        )}
       </div>
 
       <>

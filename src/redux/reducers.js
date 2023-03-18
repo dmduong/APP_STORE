@@ -11,6 +11,9 @@ import {
   ACTIVEMENU,
   SETSUPPLIER,
   SETPRODUCT,
+  SETISCHECK,
+  SETISCHECKALL,
+  SETHID,
 } from "./actionType";
 
 const arr_menu = [
@@ -69,6 +72,11 @@ const initialState = {
   listMenu: [...arr_menu],
   listSupplier: [],
   listProduct: [],
+  objectsValue: {
+    isCheck: [],
+    isCheckAll: false,
+    h_id: "",
+  },
 };
 
 export const mainReducer = (state = initialState, action) => {
@@ -152,6 +160,34 @@ export const mainReducer = (state = initialState, action) => {
       return {
         ...state,
         listProduct: [...action.payLoad],
+      };
+
+    case SETISCHECK:
+      return {
+        ...state,
+        objectsValue: {
+          isCheck: [...action.payLoad],
+          isCheckAll: state.objectsValue.isCheckAll,
+        },
+      };
+
+    case SETISCHECKALL:
+      return {
+        ...state,
+        objectsValue: {
+          isCheckAll: action.payLoad,
+          isCheck: [...state.objectsValue.isCheck],
+        },
+      };
+
+    case SETHID:
+      return {
+        ...state,
+        objectsValue: {
+          isCheckAll: state.objectsValue.isCheckAll,
+          isCheck: [...state.objectsValue.isCheck],
+          h_id: action.payLoad,
+        },
       };
 
     default:

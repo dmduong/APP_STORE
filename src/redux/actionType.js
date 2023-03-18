@@ -10,3 +10,6 @@ export const SETUNIT = "SETUNIT";
 export const ACTIVEMENU = "ACTIVEMENU";
 export const SETSUPPLIER = "SETSUPPLIER";
 export const SETPRODUCT = "SETPRODUCT";
+export const SETISCHECK = "SETISCHECK";
+export const SETISCHECKALL = "SETISCHECKALL";
+export const SETHID = "SETHID";

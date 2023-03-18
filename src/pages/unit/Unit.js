@@ -107,14 +107,14 @@ const Unit = (props) => {
   });
 
   const fnc_get_unit = async (token, pagination) => {
-    dispatch(showLoading(true));
+    // dispatch(showLoading(true));
     const response = await api.axios_get_unit(token, pagination);
     if (response.status === 200) {
       const data = [...response.data];
       dispatch(act_setUnit(data));
       dispatch(act_setPagination(response.pagination));
     }
-    dispatch(showLoading(false));
+    // dispatch(showLoading(false));
   };
 
   useEffect(() => {
