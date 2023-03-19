@@ -47,3 +47,13 @@ export const newArray = (size) => {
   }
   return x;
 };
+
+export const uniqueArray = (arrs) => {
+  const arr = [];
+  for (let i = 0; i < arrs.length; i++) {
+    if (!arr.includes(arrs[i])) {
+      arr.push(arrs[i]);
+    }
+  }
+  return arr;
+};

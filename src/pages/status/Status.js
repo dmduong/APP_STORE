@@ -28,6 +28,8 @@ import {
 } from "react-router-dom";
 import ListNormal from "../../component/List/ListNormal";
 import Placeholders from "../../component/placeholders/Placeholders";
+import ButtonCustom from "../../component/button/Button";
+import InputCustom from "../../component/input/InputCustom";
 
 const Status = (props) => {
   const isCheck = useSelector((state) => state.objectsValue.isCheck);
@@ -107,7 +109,6 @@ const Status = (props) => {
 
   const get_status = async (token, pagination) => {
     const res = await api.axios_get_status(token, pagination);
-    console.log(res.data[0].length, 3);
     if (res.status == 200) {
       const dataNew = [...res.data];
 
@@ -115,7 +116,6 @@ const Status = (props) => {
       setList(dataNew);
     } else {
       const dataNew = [...res.data];
-      console.log(dataNew[0].length, 4);
       setList(dataNew);
       // showToast("__ERROR_TYPE", res.messages);
     }
@@ -238,7 +238,6 @@ const Status = (props) => {
     }
   };
 
-  console.log(list, 6);
   const deleteItems = async (data) => {
     const id = data[1];
     const token = data[0];
@@ -263,6 +262,10 @@ const Status = (props) => {
     });
   };
 
+  const onClick = (action) => {
+    alert(action);
+  };
+
   return (
     <div className="p-1 col-md-12">
       <div className="mt-1 mb-1 p-2 border rounded d-flex justify-content-between align-items-center">
@@ -270,9 +273,12 @@ const Status = (props) => {
           <h5 className="text-dark text-center mb-0">Status manager</h5>
         </div>
         <div>
-          <Button onClick={() => handelOpenModal()} variant="primary">
-            Create
-          </Button>{" "}
+          <ButtonCustom
+            title={"Create"}
+            size={""}
+            color={"primary"}
+            onClick={() => handelOpenModal()}
+          ></ButtonCustom>
           <Button variant="danger" onClick={handleDelete}>
             Delete
           </Button>{" "}
@@ -297,6 +303,7 @@ const Status = (props) => {
             pagination={pagination}
             changePages={handleChangePage}
             hide_column={new Array("_id")}
+            id_column={new Array("_id")}
             customColumn={{
               select_column: true,
               edit_column: true,
@@ -321,20 +328,30 @@ const Status = (props) => {
           </Modal.Header>
           <Modal.Body>
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>
-                  Status code (<span className="text-danger"> * </span>)
-                </Form.Label>
-                <Form.Control
-                  type="tetx"
-                  readOnly={readOnly.codeStatus}
-                  name="codeStatus"
-                  value={text.codeStatus}
-                  onChange={handleChangeText}
-                />
-              </Form.Group>
+              <InputCustom
+                type={"text"}
+                readOnly={readOnly.codeStatus}
+                name={"codeStatus"}
+                id={"codeStatus"}
+                value={text.codeStatus}
+                onChange={handleChangeText}
+                required={true}
+                label={"Mã trạng thái"}
+                styleInput={{ width: "100%" }}
+              />
 
-              <Form.Group className="mb-3" controlId="formBasicPassword">
+              <InputCustom
+                type={"text"}
+                name={"nameStatus"}
+                value={text.nameStatus}
+                onChange={handleChangeText}
+                readOnly={readOnly.nameStatus}
+                label={"Tên trạng thái"}
+                required={true}
+                id={"nameStatus"}
+              ></InputCustom>
+
+              {/* <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>
                   Status name (<span className="text-danger"> * </span>)
                 </Form.Label>
@@ -345,7 +362,7 @@ const Status = (props) => {
                   value={text.nameStatus}
                   onChange={handleChangeText}
                 />
-              </Form.Group>
+              </Form.Group> */}
               <div className="d-flex justify-content-end">
                 <Button variant="primary" className="float-right" type="submit">
                   Create

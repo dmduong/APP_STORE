@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "./ListNormal.css";
 import { Table } from "react-bootstrap";
-import { timeToString } from "../../config/utill";
+import { timeToString, uniqueArray } from "../../config/utill";
 import Checkbox from "../checkbox/Checkbox";
 import { FiEdit } from "react-icons/fi";
 import { Pagination } from "../pagination/Pagination";
@@ -21,6 +21,8 @@ const ListNormal = (props) => {
   const isCheck = useSelector((state) => state.objectsValue.isCheck);
   const isCheckAll = useSelector((state) => state.objectsValue.isCheckAll);
   const h_id = useSelector((state) => state.objectsValue.h_id);
+  const __span = "~^~";
+  let id_cols_custom = new Array();
   let {
     data,
     pagination,
@@ -29,8 +31,8 @@ const ListNormal = (props) => {
     name,
     hide_column,
     onClickEdit,
+    id_column,
   } = props;
-
   const hide_cols_custom = (hide_column) => {
     let hide_cols_new = new Array();
     for (let index = 0; index < hide_column.length; index++) {
@@ -52,9 +54,21 @@ const ListNormal = (props) => {
 
   const handleSelectAll = (e) => {
     dispatch(act_setIsCheckAll(!isCheckAll));
-    dispatch(act_setIsCheck(data[0].map((li) => li[0][1])));
-    if (isCheckAll) {
-      dispatch(act_setIsCheck([]));
+    if (id_column.length > 0) {
+      let news = new Array();
+      id_cols_custom.map((v, k) => {
+        news.push(v.join(__span));
+      });
+      const arr = uniqueArray(news);
+      dispatch(act_setIsCheck(arr.map((li) => li)));
+      if (isCheckAll) {
+        dispatch(act_setIsCheck([]));
+      }
+    } else {
+      dispatch(act_setIsCheck(data[0].map((li) => li[0][1])));
+      if (isCheckAll) {
+        dispatch(act_setIsCheck([]));
+      }
     }
   };
 
@@ -84,7 +98,7 @@ const ListNormal = (props) => {
   } else {
     header = [...data[1]];
     if (customColumn.stt_column) {
-      if (!check_arr("Stt", header)) {
+      if (!check_arr("_stt", header)) {
         header.unshift(Array("_stt", "Stt"));
       }
     }
@@ -147,10 +161,17 @@ const ListNormal = (props) => {
         value_new = [...value_new];
       }
 
+      let arr_cols_id = new Array();
       return (
         <tr key={keys}>
           {value_new.map((data, index) => {
-            let id_cols = value_new[1][1];
+            if (id_column.indexOf(data[0]) !== -1) {
+              arr_cols_id.push(data[1]);
+            }
+            let id_cols = arr_cols_id.join(__span);
+            if (id_column.length > 0) {
+              id_cols_custom.push(arr_cols_id);
+            }
             let key_col = value_new[index][0];
 
             if (data[0] == "icon_edit") {
@@ -174,7 +195,7 @@ const ListNormal = (props) => {
                   <Checkbox
                     key={id_cols}
                     type="checkbox"
-                    name={"chk_" + name + "_" + id_cols}
+                    name={"chk_" + name + "_" + index}
                     id={id_cols}
                     handleClick={handleClick}
                     isChecked={isCheck.includes(id_cols)}
@@ -261,6 +282,7 @@ ListNormal.propTypes = {
   customColumn: PropTypes.object,
   name: PropTypes.string,
   hide_column: PropTypes.array,
+  id_column: PropTypes.array,
 };
 
 ListNormal.defaultProps = {
@@ -272,6 +294,7 @@ ListNormal.defaultProps = {
 
   name: "list",
   hide_column: new Array("_id"),
+  id_column: [],
 };
 
 export default ListNormal;

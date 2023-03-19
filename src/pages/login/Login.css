@@ -50,4 +50,10 @@
 
 .text-input-css {
     background: rgba(31, 31, 31, 0.5);
+    color: white;
+}
+
+.text-input-css:focus {
+    background-color: rgba(31, 31, 31, 0.5) !important;
+    color: white;
 }

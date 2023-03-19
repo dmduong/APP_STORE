@@ -87,7 +87,7 @@ const Login = (props) => {
           <Form className="form-login" onSubmit={handleSubmit}>
             <div className="content-top">
               <h2 className="opcity-content text-center text-white">
-                Login to system
+                Đăng nhập vào hệ thống
               </h2>
             </div>
             <div className="content-bottom">
@@ -125,10 +125,16 @@ const Login = (props) => {
                 className="mb-3 text-white"
                 controlId="formBasicCheckbox"
               >
-                <Form.Check type="checkbox" label="Save login" />
+                <Form.Check
+                  type="checkbox"
+                  style={{
+                    color: "white",
+                  }}
+                  label="Nhớ mật khẩu"
+                />
               </Form.Group>
               <Button className="bg-none w-100 mt-4 btn" type="submit">
-                Login
+                Đăng nhập
               </Button>
             </div>
           </Form>

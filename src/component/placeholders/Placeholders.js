@@ -63,7 +63,7 @@ const Placeholders = (props) => {
   }
 
   return (
-    <table class="table mb-0">
+    <table className="table mb-0">
       <thead className="thead-light">{placeholders_header}</thead>
       <tbody>{placeholders}</tbody>
     </table>
