@@ -57,3 +57,11 @@ export const uniqueArray = (arrs) => {
   }
   return arr;
 };
+
+export const isset = (value) => {
+  if (value) {
+    return true;
+  } else {
+    return false;
+  }
+};

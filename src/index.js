@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import Root from "./Root";
 import { CookiesProvider } from "react-cookie";
+import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

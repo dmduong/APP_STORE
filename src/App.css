@@ -22,3 +22,14 @@ body {
   width: 100px;
   background-color: red;
 }
+
+.content-loading {
+  background-color:  rgb(197, 197, 197);
+  width: 100px;
+  height: 100px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}

@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "./Login.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { showToast } from "../../component/toast/Toast";
 import { useDispatch, useSelector } from "react-redux";
+import images from "./pexels-francesco-ungaro-13817453.jpg";
 import {
   showLoading,
   loginIn,
   act_setUser,
   act_activeMenu,
+  act_setToken,
+  act_setRefreshToken,
+  logout,
 } from "../../redux/action";
 import { showConfirm } from "../../component/confirm/Confirm";
 import { api } from "../../config/axios";
@@ -23,8 +27,12 @@ import {
 } from "react-router-dom";
 import { useCookies, removeCookie } from "react-cookie";
 import { getItem, setItem } from "../../config/utill";
+import ButtonCustom from "../../component/button/Button";
+import Loading from "../../Loading";
 
 const Login = (props) => {
+  const { submitLogin } = props;
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const [text, setText] = useState({ email: "", password: "" });
   const navigate = useNavigate();
@@ -41,6 +49,41 @@ const Login = (props) => {
     });
   };
 
+  const userToken = useSelector((state) => {
+    if (cookies.token != "") {
+      return cookies.token;
+    } else {
+      return state.userToken;
+    }
+  });
+
+  const user = useSelector((state) => {
+    if (cookies.user != "") {
+      return cookies.user;
+    } else {
+      return state.user;
+    }
+  });
+
+  const refreshToken = useSelector((state) => {
+    if (cookies.refreshToken != "") {
+      return cookies.refreshToken;
+    } else {
+      return state.refreshToken;
+    }
+  });
+
+  useEffect(() => {
+    if (!userToken) {
+      dispatch(logout());
+      navigate("/login");
+    } else {
+      navigate("/admin/dashboard");
+    }
+
+    setIsLoading(false);
+  }, []);
+
   const listMenu = useSelector((state) => {
     if (!getItem("listMenu")) {
       return state.listMenu;
@@ -51,99 +94,104 @@ const Login = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(showLoading(true));
-    const response = await api.axios_login(text);
-    if (!response) {
-      showToast("__ERROR_TYPE", response.messages);
-      dispatch(showLoading(false));
-    } else if (response.status == 200) {
-      showToast("__SUCCESS_TYPE", response.messages);
-      dispatch(loginIn(response.token, response.resfreshToken));
-      setCookie("token", response.token, { path: "/" });
-      setCookie("user", response.data, { path: "/" });
-      setCookie("refreshToken", response.resfreshToken, { path: "/" });
-      dispatch(act_setUser(response.data));
-      const list = [...listMenu];
-      list[0].active = true;
-      setItem("listMenu", list);
-      dispatch(act_activeMenu(list));
-      navigate("/dashboard", { replace: true });
-      dispatch(showLoading(false));
-    } else if (response.status == 401) {
-      navigate("/login", { replace: true });
-      showToast("__ERROR_TYPE", response.messages);
-      dispatch(showLoading(false));
-    } else {
-      navigate("/login", { replace: true });
-      showToast("__ERROR_TYPE", response.data);
-      dispatch(showLoading(false));
-    }
+    submitLogin(text);
   };
 
   return (
-    <div className="page-content-login">
-      <div className="page-login">
-        <div className="page_top">
-          <Form className="form-login" onSubmit={handleSubmit}>
-            <div className="content-top">
-              <h2 className="opcity-content text-center text-white">
-                Đăng nhập vào hệ thống
-              </h2>
-            </div>
-            <div className="content-bottom">
-              <Form.Group
-                className="mb-3 text-white w-100"
-                controlId="formBasicEmail"
-              >
-                <Form.Label>Account</Form.Label>
-                <Form.Control
-                  className="text-input-css"
-                  type="text"
-                  name="email"
-                  onChange={handleChange}
-                  value={text.email}
-                  placeholder="Account"
-                />
-              </Form.Group>
+    <>
+      {isLoading ? (
+        <Loading></Loading>
+      ) : (
+        <>
+          {" "}
+          <div className="page-content-login">
+            <div className="page-login">
+              <div className="page_top">
+                <Form className="form-login" onSubmit={handleSubmit}>
+                  <div className="content-top">
+                    <h2 className="opcity-content text-center text-white">
+                      Đăng nhập vào hệ thống
+                    </h2>
+                  </div>
+                  <div className="content-bottom">
+                    <div className="content-input-login">
+                      <div className="w-100 p-2">
+                        <Form.Group
+                          className="mb-3 text-white w-100"
+                          controlId="formBasicEmail"
+                        >
+                          <Form.Label>
+                            <b>Tên người dùng</b>
+                          </Form.Label>
+                          <Form.Control
+                            className="text-input-css p-3"
+                            type="text"
+                            name="email"
+                            onChange={handleChange}
+                            value={text.email}
+                            placeholder="Account"
+                          />
+                        </Form.Group>
 
-              <Form.Group
-                className="mb-3 text-white w-100"
-                controlId="formBasicPassword"
-              >
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  className="text-input-css"
-                  type="password"
-                  name="password"
-                  onChange={handleChange}
-                  value={text.password}
-                  placeholder="Password"
-                />
-              </Form.Group>
+                        <Form.Group
+                          className="mb-3 text-white w-100"
+                          controlId="formBasicPassword"
+                        >
+                          <Form.Label>
+                            <b>Mật khẩu</b>
+                          </Form.Label>
+                          <Form.Control
+                            className="text-input-css p-3"
+                            type="password"
+                            name="password"
+                            onChange={handleChange}
+                            value={text.password}
+                            placeholder="Password"
+                          />
+                        </Form.Group>
 
-              <Form.Group
-                className="mb-3 text-white"
-                controlId="formBasicCheckbox"
-              >
-                <Form.Check
-                  type="checkbox"
-                  style={{
-                    color: "white",
-                  }}
-                  label="Nhớ mật khẩu"
-                />
-              </Form.Group>
-              <Button className="bg-none w-100 mt-4 btn" type="submit">
-                Đăng nhập
-              </Button>
+                        <Form.Group
+                          className="mb-3 text-white"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            style={{
+                              color: "white",
+                            }}
+                            label="Nhớ mật khẩu"
+                          />
+                        </Form.Group>
+                        <ButtonCustom
+                          title={"Đăng nhập"}
+                          className={"p-3 w-100"}
+                          color={""}
+                          type={"submit"}
+                          style={{
+                            backgroundColor: " rgba(150, 150, 150, 0.5) ",
+                            fontWeight: "bold",
+                            color: "white",
+                          }}
+                        ></ButtonCustom>
+                      </div>
+                    </div>
+                  </div>
+                </Form>
+              </div>
             </div>
-          </Form>
-        </div>
-      </div>
-    </div>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
-Login.propTypes = {};
+Login.propTypes = {
+  submitLogin: PropTypes.func,
+};
+
+Login.defaultProps = {
+  submitLogin: null,
+};
 
 export default Login;

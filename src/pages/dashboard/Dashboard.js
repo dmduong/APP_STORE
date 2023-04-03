@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
+  const { token } = props;
   return (
-    <div>Dashboard</div>
-  )
-}
+    <>
+      <h2>Dashboard (Protected)</h2>
+      <div>Authenticated as {token}</div>
+    </>
+  );
+};
 
-export default Dashboard
+export default Dashboard;

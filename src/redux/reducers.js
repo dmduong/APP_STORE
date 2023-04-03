@@ -20,37 +20,37 @@ const arr_menu = [
   {
     _id: 1,
     name: "Dashboard",
-    link: "/dashboard",
+    link: "dashboard",
     active: false,
   },
   {
     _id: 2,
     name: "Status",
-    link: "/status",
+    link: "status",
     active: false,
   },
   {
     _id: 3,
     name: "Category",
-    link: "/category",
+    link: "category",
     active: false,
   },
   {
     _id: 4,
     name: "Unit",
-    link: "/unit",
+    link: "unit",
     active: false,
   },
   {
     _id: 5,
     name: "Supplier",
-    link: "/supplier",
+    link: "supplier",
     active: false,
   },
   {
     _id: 6,
     name: "Products",
-    link: "/product",
+    link: "product",
     active: false,
   },
 ];

@@ -115,7 +115,7 @@ const Status = (props) => {
       setPagination(res.pagination);
       setList(dataNew);
     } else {
-      const dataNew = [...res.data];
+      const dataNew = [[], []];
       setList(dataNew);
       // showToast("__ERROR_TYPE", res.messages);
     }
