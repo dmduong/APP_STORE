@@ -43,6 +43,12 @@ import Login from "./pages/login/Login";
 import Admin from "./pages/Admin/Admin";
 import ProtectedRoute from "./ProtectedRoute";
 import Loading from "./Loading";
+import Home from "./pages/home/Home";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Unit from "./pages/unit/Unit";
+import Category from "./pages/category/Category";
+import Product from "./pages/product/Product";
+import ProtectedRouteAdmin from "./ProtectedRouteAdmin";
 
 function Root() {
   const isLoading_redux = useSelector((state) => state.isLoading);
@@ -99,7 +105,9 @@ function Root() {
     // } else {
     //   get_user(userToken);
     // }
-    setIsLoading(false);
+    setInterval(() => {
+      setIsLoading(false);
+    }, 1000);
   }, [dispatch]);
 
   const listMenu = useSelector((state) => {
@@ -198,7 +206,23 @@ function Root() {
                   />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route element={<ProtectedRouteAdmin isAllowed={!!userToken} />}>
+                <Route path="home" element={<Home />} title={"Trang chủ"} />
+                <Route index element={<Dashboard />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route
+                  path="status"
+                  element={<Status />}
+                  title={"Trạng thái"}
+                />
+                <Route path="unit" element={<Unit />} />
+                <Route path="category" element={<Category />} />
+                <Route path="product" element={<Product />} />
+              </Route>
+              <Route path="roles" element={<>Không có quyền</>} />
+              <Route path="*" element={<p>There's nothing here: 404 new!</p>} />
+            </Route>
             <Route path="*" element={<p>There's nothing here: 404!</p>} />
           </Routes>
         </>

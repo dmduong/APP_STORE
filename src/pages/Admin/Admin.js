@@ -13,7 +13,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Spinners from "../../component/spinner/Spinners";
-import { getItem, isset, remoteItem, setItem } from "../../config/utill";
+import { getItem, isset, setItem } from "../../config/utill";
 import {
   Container,
   Dropdown,
@@ -283,28 +283,37 @@ function Admin(props) {
                       </div>
                       <div className="content-pages">
                         {
-                          <Routes>
-                            <Route
-                              element={
-                                <ProtectedRouteAdmin
-                                  isAllowed={!!props.checkToken}
-                                />
-                              }
-                            >
-                              <Route path="/home" element={<Home />} />
-                              <Route index element={<Dashboard />} />
-                              <Route path="dashboard" element={<Dashboard />} />
-                              <Route path="status" element={<Status />} />
-                              <Route path="unit" element={<Unit />} />
-                              <Route path="category" element={<Category />} />
-                              <Route path="product" element={<Product />} />
-                            </Route>
-                            <Route path="roles" element={<>Không có quyền</>} />
-                            <Route
-                              path="*"
-                              element={<p>There's nothing here: 404 new!</p>}
-                            />
-                          </Routes>
+                          <Outlet></Outlet>
+                          //   <Routes>
+                          //     <Route
+                          //       element={
+                          //         <ProtectedRouteAdmin
+                          //           isAllowed={!!props.checkToken}
+                          //         />
+                          //       }
+                          //     >
+                          //       <Route
+                          //         path="/home"
+                          //         element={<Home />}
+                          //         title={"Trang chủ"}
+                          //       />
+                          //       <Route index element={<Dashboard />} />
+                          //       <Route path="dashboard" element={<Dashboard />} />
+                          //       <Route
+                          //         path="status"
+                          //         element={<Status />}
+                          //         title={"Trạng thái"}
+                          //       />
+                          //       <Route path="unit" element={<Unit />} />
+                          //       <Route path="category" element={<Category />} />
+                          //       <Route path="product" element={<Product />} />
+                          //     </Route>
+                          //     <Route path="roles" element={<>Không có quyền</>} />
+                          //     <Route
+                          //       path="*"
+                          //       element={<p>There's nothing here: 404 new!</p>}
+                          //     />
+                          //   </Routes>
                         }
                       </div>
                     </div>

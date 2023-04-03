@@ -81,7 +81,9 @@ const Login = (props) => {
       navigate("/admin/dashboard");
     }
 
-    setIsLoading(false);
+    setInterval(() => {
+      setIsLoading(false);
+    }, 3000);
   }, []);
 
   const listMenu = useSelector((state) => {
