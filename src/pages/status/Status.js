@@ -25,6 +25,7 @@ import {
   useNavigate,
   createSearchParams,
   useSearchParams,
+  Outlet,
 } from "react-router-dom";
 import ListNormal from "../../component/List/ListNormal";
 import Placeholders from "../../component/placeholders/Placeholders";
@@ -109,6 +110,7 @@ const Status = (props) => {
 
   const get_status = async (token, pagination) => {
     const res = await api.axios_get_status(token, pagination);
+    console.log(res);
     if (res.status == 200) {
       const dataNew = [...res.data];
 
@@ -266,8 +268,13 @@ const Status = (props) => {
     alert(action);
   };
 
+  const handleClickDetail = (id) => {
+    console.log(id);
+  };
+
   return (
     <div className="p-1 col-md-12">
+      <Outlet></Outlet>
       <div className="mt-1 mb-1 p-2 border rounded d-flex justify-content-between align-items-center">
         <div className="mt-1 mb-2">
           <h5 className="text-dark text-center mb-0">Status manager</h5>
@@ -304,10 +311,17 @@ const Status = (props) => {
             changePages={handleChangePage}
             hide_column={new Array("_id")}
             id_column={new Array("_id")}
+            onClickDetail={handleClickDetail}
             customColumn={{
               select_column: true,
               edit_column: true,
               stt_column: true,
+              detail_column: [
+                {
+                  type: "link",
+                  link: "",
+                },
+              ],
             }}
             onClickEdit={handleEdit}
           ></ListNormal>

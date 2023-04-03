@@ -32,6 +32,7 @@ import {
   act_setUser,
   loginIn,
   logout,
+  showLoading,
 } from "./redux/action";
 import { api } from "./config/axios";
 import { showToast } from "./component/toast/Toast";
@@ -49,6 +50,7 @@ import Unit from "./pages/unit/Unit";
 import Category from "./pages/category/Category";
 import Product from "./pages/product/Product";
 import ProtectedRouteAdmin from "./ProtectedRouteAdmin";
+import StatusDetail from "./pages/status/StatusDetail";
 
 function Root() {
   const isLoading_redux = useSelector((state) => state.isLoading);
@@ -105,9 +107,9 @@ function Root() {
     // } else {
     //   get_user(userToken);
     // }
-    setInterval(() => {
-      setIsLoading(false);
-    }, 1000);
+    // setInterval(() => {
+    //   setIsLoading(false);
+    // }, 2000);
   }, [dispatch]);
 
   const listMenu = useSelector((state) => {
@@ -156,6 +158,7 @@ function Root() {
   const handleLogout = async (token, refreshToken) => {
     const res = await api.axios_logout(token, refreshToken);
     if (res.status == 200) {
+      dispatch(showLoading(true));
       remoteItem("listMenu");
       remoteItem("openMenu");
       dispatch(logout());
@@ -171,6 +174,7 @@ function Root() {
   const handleLogoutAll = async (token, refreshToken) => {
     const res = await api.axios_logout_all(token, refreshToken);
     if (res.status == 200) {
+      dispatch(showLoading(true));
       setCookie("token", "", { path: "/" });
       setCookie("user", "", { path: "/" });
       setCookie("refreshToken", "", { path: "/" });
@@ -185,48 +189,47 @@ function Root() {
 
   return (
     <div className="page">
-      {isLoading ? (
-        <Loading></Loading>
-      ) : (
-        <>
-          <Routes>
-            <Route index element={<Login submitLogin={fncLoginAccount} />} />
-            <Route
-              path="login"
-              element={<Login submitLogin={fncLoginAccount} />}
-            />
-            <Route
-              path="quanly/*"
-              element={
-                <ProtectedRoute redirectPath="/login" isAllowed={!!userToken}>
-                  <Admin
-                    checkToken={userToken}
-                    handleLogout={handleLogout}
-                    handleLogoutAll={handleLogoutAll}
-                  />
-                </ProtectedRoute>
-              }
-            >
-              <Route element={<ProtectedRouteAdmin isAllowed={!!userToken} />}>
-                <Route path="home" element={<Home />} title={"Trang chủ"} />
-                <Route index element={<Dashboard />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route
-                  path="status"
-                  element={<Status />}
-                  title={"Trạng thái"}
+      {/* {isLoading ? (
+        // <Loading></Loading>
+        <></>
+      ) : ( */}
+      <>
+        <Routes>
+          <Route index element={<Login submitLogin={fncLoginAccount} />} />
+          <Route
+            path="login"
+            element={<Login submitLogin={fncLoginAccount} />}
+          />
+          <Route
+            path="quanly/*"
+            element={
+              <ProtectedRoute redirectPath="/login" isAllowed={!!userToken}>
+                <Admin
+                  checkToken={userToken}
+                  handleLogout={handleLogout}
+                  handleLogoutAll={handleLogoutAll}
                 />
-                <Route path="unit" element={<Unit />} />
-                <Route path="category" element={<Category />} />
-                <Route path="product" element={<Product />} />
+              </ProtectedRoute>
+            }
+          >
+            <Route element={<ProtectedRouteAdmin isAllowed={!!userToken} />}>
+              <Route path="home" element={<Home />} title={"Trang chủ"} />
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="status" element={<Status />} title={"Trạng thái"}>
+                <Route path=":id" element={<StatusDetail />} />
               </Route>
-              <Route path="roles" element={<>Không có quyền</>} />
-              <Route path="*" element={<p>There's nothing here: 404 new!</p>} />
+              <Route path="unit" element={<Unit />} />
+              <Route path="category" element={<Category />} />
+              <Route path="product" element={<Product />} />
             </Route>
-            <Route path="*" element={<p>There's nothing here: 404!</p>} />
-          </Routes>
-        </>
-      )}
+            <Route path="roles" element={<>Không có quyền</>} />
+            <Route path="*" element={<p>There's nothing here: 404 new!</p>} />
+          </Route>
+          <Route path="*" element={<p>There's nothing here: 404!</p>} />
+        </Routes>
+      </>
+      {/* )} */}
       {isLoading_redux && <Loading></Loading>}
       <ToastContainer
         position="top-right"

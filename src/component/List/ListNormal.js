@@ -4,7 +4,7 @@ import "./ListNormal.css";
 import { Table } from "react-bootstrap";
 import { timeToString, uniqueArray } from "../../config/utill";
 import Checkbox from "../checkbox/Checkbox";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiEye } from "react-icons/fi";
 import { Pagination } from "../pagination/Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,6 +15,7 @@ import {
 import Spinners from "../spinner/Spinners";
 import { propTypes } from "react-bootstrap/esm/Image";
 import Placeholders from "../placeholders/Placeholders";
+import { Link } from "react-router-dom";
 
 const ListNormal = (props) => {
   const dispatch = useDispatch();
@@ -32,7 +33,10 @@ const ListNormal = (props) => {
     hide_column,
     onClickEdit,
     id_column,
+    onClickDetail,
   } = props;
+  console.log(customColumn.detail_column);
+
   const hide_cols_custom = (hide_column) => {
     let hide_cols_new = new Array();
     for (let index = 0; index < hide_column.length; index++) {
@@ -50,6 +54,10 @@ const ListNormal = (props) => {
   const handleEdit = async (id) => {
     onClickEdit(id);
     dispatch(atc_setId(id));
+  };
+
+  const goToDetail = (id) => {
+    onClickDetail(id);
   };
 
   const handleSelectAll = (e) => {
@@ -91,16 +99,27 @@ const ListNormal = (props) => {
     return count > 0 ? true : false;
   }
 
+  console.log(data);
   let element_header = "";
   element_header = "";
   let header = new Array();
   if (!data[1] || data[1].length <= 0) {
   } else {
-    header = [...data[1]];
+    let arr_header_new = new Array();
+    data[1].map((v, i) => {
+      let key = v.key;
+      let value = v.value;
+      arr_header_new[i] = new Array(key, value);
+    });
+    header = [...arr_header_new];
     if (customColumn.stt_column) {
       if (!check_arr("_stt", header)) {
         header.unshift(Array("_stt", "Stt"));
       }
+    }
+
+    if (customColumn.detail_column && customColumn.detail_column.length > 0) {
+      header = [...header, Array("_detail", "Chi tiết")];
     }
 
     if (customColumn.select_column && customColumn.edit_column) {
@@ -140,11 +159,26 @@ const ListNormal = (props) => {
       </td>
     );
   } else {
-    let list_new = [...data[0]];
+    let arr_data_new = new Array();
+    data[0].map((v, i) => {
+      let arr_chill_new = new Array();
+      v.map((chill, indexChill) => {
+        let key = chill.key;
+        let value = chill.value;
+        arr_chill_new[indexChill] = new Array(key, value);
+      });
+      arr_data_new[i] = arr_chill_new;
+    });
+
+    let list_new = [...arr_data_new];
     element_body = list_new.map((value, keys) => {
       value_new = [...value];
       if (customColumn.stt_column) {
         value_new.unshift(Array("stt", keys + 1));
+      }
+
+      if (customColumn.detail_column && customColumn.detail_column.length > 0) {
+        value_new = [...value_new, Array("icon_detail", "detail")];
       }
 
       if (customColumn.select_column && customColumn.edit_column) {
@@ -173,6 +207,32 @@ const ListNormal = (props) => {
               id_cols_custom.push(arr_cols_id);
             }
             let key_col = value_new[index][0];
+
+            if (data[0] == "icon_detail") {
+              if (customColumn.detail_column[0].type === "link") {
+                return (
+                  <td className="text-center" key={index}>
+                    {" "}
+                    <Link
+                      to={customColumn.detail_column[0].link + "" + id_cols}
+                    >
+                      {" "}
+                      <FiEye className="icon-detail"></FiEye>
+                    </Link>
+                  </td>
+                );
+              }
+
+              return (
+                <td className="text-center" key={index}>
+                  {" "}
+                  <FiEye
+                    className="icon-detail"
+                    onClick={() => goToDetail(id_cols)}
+                  ></FiEye>
+                </td>
+              );
+            }
 
             if (data[0] == "icon_edit") {
               return (
@@ -283,6 +343,7 @@ ListNormal.propTypes = {
   name: PropTypes.string,
   hide_column: PropTypes.array,
   id_column: PropTypes.array,
+  onClickDetail: PropTypes.func,
 };
 
 ListNormal.defaultProps = {
@@ -290,11 +351,13 @@ ListNormal.defaultProps = {
     select_column: true,
     edit_column: true,
     stt_column: true,
+    detail_column: false,
   },
 
   name: "list",
   hide_column: new Array("_id"),
   id_column: [],
+  onClickDetail: null,
 };
 
 export default ListNormal;

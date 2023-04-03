@@ -28,7 +28,7 @@ import {
 import { useCookies, removeCookie } from "react-cookie";
 import { getItem, setItem } from "../../config/utill";
 import ButtonCustom from "../../component/button/Button";
-import Loading from "../../Loading";
+// import Loading from "../../Loading";
 
 const Login = (props) => {
   const { submitLogin } = props;
@@ -78,11 +78,11 @@ const Login = (props) => {
       dispatch(logout());
       navigate("/login");
     } else {
-      navigate("/admin/dashboard");
+      navigate("/quanly/dashboard");
     }
 
     setInterval(() => {
-      setIsLoading(false);
+      dispatch(showLoading(false));
     }, 3000);
   }, []);
 
@@ -101,89 +101,89 @@ const Login = (props) => {
 
   return (
     <>
-      {isLoading ? (
+      {/* {isLoading ? (
         <Loading></Loading>
-      ) : (
-        <>
-          {" "}
-          <div className="page-content-login">
-            <div className="page-login">
-              <div className="page_top">
-                <Form className="form-login" onSubmit={handleSubmit}>
-                  <div className="content-top">
-                    <h2 className="opcity-content text-center text-white">
-                      Đăng nhập vào hệ thống
-                    </h2>
-                  </div>
-                  <div className="content-bottom">
-                    <div className="content-input-login">
-                      <div className="w-100 p-2">
-                        <Form.Group
-                          className="mb-3 text-white w-100"
-                          controlId="formBasicEmail"
-                        >
-                          <Form.Label>
-                            <b>Tên người dùng</b>
-                          </Form.Label>
-                          <Form.Control
-                            className="text-input-css p-3"
-                            type="text"
-                            name="email"
-                            onChange={handleChange}
-                            value={text.email}
-                            placeholder="Account"
-                          />
-                        </Form.Group>
+      ) : ( */}
+      <>
+        {" "}
+        <div className="page-content-login">
+          <div className="page-login">
+            <div className="page_top">
+              <Form className="form-login" onSubmit={handleSubmit}>
+                <div className="content-top">
+                  <h2 className="opcity-content text-center text-white">
+                    Đăng nhập vào hệ thống
+                  </h2>
+                </div>
+                <div className="content-bottom">
+                  <div className="content-input-login">
+                    <div className="w-100 p-2">
+                      <Form.Group
+                        className="mb-3 text-white w-100"
+                        controlId="formBasicEmail"
+                      >
+                        <Form.Label>
+                          <b>Tên người dùng</b>
+                        </Form.Label>
+                        <Form.Control
+                          className="text-input-css p-3"
+                          type="text"
+                          name="email"
+                          onChange={handleChange}
+                          value={text.email}
+                          placeholder="Account"
+                        />
+                      </Form.Group>
 
-                        <Form.Group
-                          className="mb-3 text-white w-100"
-                          controlId="formBasicPassword"
-                        >
-                          <Form.Label>
-                            <b>Mật khẩu</b>
-                          </Form.Label>
-                          <Form.Control
-                            className="text-input-css p-3"
-                            type="password"
-                            name="password"
-                            onChange={handleChange}
-                            value={text.password}
-                            placeholder="Password"
-                          />
-                        </Form.Group>
+                      <Form.Group
+                        className="mb-3 text-white w-100"
+                        controlId="formBasicPassword"
+                      >
+                        <Form.Label>
+                          <b>Mật khẩu</b>
+                        </Form.Label>
+                        <Form.Control
+                          className="text-input-css p-3"
+                          type="password"
+                          name="password"
+                          onChange={handleChange}
+                          value={text.password}
+                          placeholder="Password"
+                        />
+                      </Form.Group>
 
-                        <Form.Group
-                          className="mb-3 text-white"
-                          controlId="formBasicCheckbox"
-                        >
-                          <Form.Check
-                            type="checkbox"
-                            style={{
-                              color: "white",
-                            }}
-                            label="Nhớ mật khẩu"
-                          />
-                        </Form.Group>
-                        <ButtonCustom
-                          title={"Đăng nhập"}
-                          className={"p-3 w-100"}
-                          color={""}
-                          type={"submit"}
+                      <Form.Group
+                        className="mb-3 text-white"
+                        controlId="formBasicCheckbox"
+                      >
+                        <Form.Check
+                          type="checkbox"
                           style={{
-                            backgroundColor: " rgba(150, 150, 150, 0.5) ",
-                            fontWeight: "bold",
                             color: "white",
                           }}
-                        ></ButtonCustom>
-                      </div>
+                          label="Nhớ mật khẩu"
+                        />
+                      </Form.Group>
+                      <ButtonCustom
+                        title={"Đăng nhập"}
+                        className={"p-3 w-100"}
+                        color={""}
+                        type={"submit"}
+                        style={{
+                          backgroundColor: " rgba(150, 150, 150, 0.5) ",
+                          fontWeight: "bold",
+                          color: "white",
+                        }}
+                      ></ButtonCustom>
                     </div>
                   </div>
-                </Form>
-              </div>
+                </div>
+              </Form>
             </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
+      {/* )} */}
     </>
   );
 };
