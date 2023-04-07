@@ -10,7 +10,7 @@ body {
   height: 100vh;
 }
 .loading {
-  transition: .5s all ease;
+  transition: 7s all ease-in;
   position: absolute;
   top: 0;
   left: 1;
@@ -24,4 +24,15 @@ body {
   align-items: center;
   z-index: 99999999999999;
   cursor: wait;
+}
+
+
+.hide {
+  display: none;
+  transition: 7s all ease;
+}
+
+.show {
+  display: inline-flex;
+  transition: 7s all ease;
 }

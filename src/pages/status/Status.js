@@ -8,7 +8,7 @@ import Checkbox from "../../component/checkbox/Checkbox";
 import { api } from "../../config/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { showToast } from "../../component/toast/Toast";
-import { timeToString } from "../../config/utill";
+import { __showLoading, setTitle, timeToString } from "../../config/utill";
 import Modal from "react-bootstrap/Modal";
 import { FiEdit } from "react-icons/fi";
 import {
@@ -31,6 +31,7 @@ import ListNormal from "../../component/List/ListNormal";
 import Placeholders from "../../component/placeholders/Placeholders";
 import ButtonCustom from "../../component/button/Button";
 import InputCustom from "../../component/input/InputCustom";
+import { __ERROR_TYPE, __SUCCESS_TYPE } from "../../config/content";
 
 const Status = (props) => {
   const isCheck = useSelector((state) => state.objectsValue.isCheck);
@@ -119,7 +120,6 @@ const Status = (props) => {
     } else {
       const dataNew = [[], []];
       setList(dataNew);
-      // showToast("__ERROR_TYPE", res.messages);
     }
     setLoading(false);
   };
@@ -139,11 +139,12 @@ const Status = (props) => {
           dataNew.storeId.codeStore + " - " + dataNew.storeId.nameStore,
       });
     } else {
-      showToast("__ERROR_TYPE", res.messages);
+      showToast(__ERROR_TYPE, res.messages);
     }
   };
 
   useEffect(() => {
+    setTitle(props.user.storeId.nameStore, props.title);
     get_status(userToken, pagination);
   }, [dispatch]);
 
@@ -175,7 +176,6 @@ const Status = (props) => {
   };
 
   const handleEdit = async (id) => {
-    dispatch(showLoading(true));
     await edit_status(userToken, id);
     setReadOnly({
       ...readOnly,
@@ -185,7 +185,6 @@ const Status = (props) => {
       storeName: true,
     });
     setLgShowEdit(true);
-    dispatch(showLoading(false));
   };
 
   const handelOpenModal = () => {
@@ -200,7 +199,6 @@ const Status = (props) => {
 
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
-    dispatch(showLoading(true));
     let { nameStatus, idStatus } = textEdit;
     let res = await api.axios_update_status(userToken, idStatus, {
       nameStatus,
@@ -209,14 +207,12 @@ const Status = (props) => {
     if (res.status == 200) {
       setLgShowEdit(false);
       await get_status(userToken, pagination);
-      showToast("__SUCCESS_TYPE", res.messages);
+      showToast(__SUCCESS_TYPE, res.messages);
     } else if (res.status == 400) {
-      showToast("__ERROR_TYPE", res.messages);
+      showToast(__ERROR_TYPE, res.messages);
     } else {
-      showToast("__ERROR_TYPE", res.messages);
+      showToast(__ERROR_TYPE, res.messages);
     }
-
-    dispatch(showLoading(false));
   };
 
   const handleChangeTextEdit = (e) => {
@@ -312,6 +308,7 @@ const Status = (props) => {
             hide_column={new Array("_id")}
             id_column={new Array("_id")}
             onClickDetail={handleClickDetail}
+            onClickEdit={handleEdit}
             customColumn={{
               select_column: true,
               edit_column: true,
@@ -323,7 +320,6 @@ const Status = (props) => {
                 },
               ],
             }}
-            onClickEdit={handleEdit}
           ></ListNormal>
         )}
       </div>

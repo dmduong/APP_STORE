@@ -1,6 +1,20 @@
 .icon-detail {
     color: red;
 }
+
+.icon-detail:hover {
+    color: rgb(129, 1, 1);
+    font-size: 25px;
+    transition: .5s all ease;
+}
+
 .icon-edit {
     color: green;
+    cursor: pointer;
+}
+
+.icon-edit:hover {
+    color: rgb(3, 63, 3);
+    font-size: 25px;
+    transition: .5s all ease;
 }

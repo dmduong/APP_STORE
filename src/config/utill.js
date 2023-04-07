@@ -65,3 +65,25 @@ export const isset = (value) => {
     return false;
   }
 };
+
+export const setTitle = (nameStore = "", title = "") => {
+  let content = "";
+  if (nameStore === "") {
+    content = title;
+  } else {
+    content = title + " | " + nameStore;
+  }
+
+  document.title = content;
+};
+
+export const __showLoading = (status) => {
+  const id = document.getElementById("load");
+  if (status) {
+    id.classList.add("show");
+    id.classList.remove("hide");
+  } else {
+    id.classList.add("hide");
+    id.classList.remove("show");
+  }
+};

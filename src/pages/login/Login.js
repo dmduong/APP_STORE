@@ -81,6 +81,8 @@ const Login = (props) => {
       navigate("/quanly/dashboard");
     }
 
+    document.title = "Đăng nhập";
+
     setInterval(() => {
       dispatch(showLoading(false));
     }, 3000);

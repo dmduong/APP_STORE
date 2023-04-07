@@ -24,7 +24,7 @@ body {
 }
 
 .content-loading {
-  background-color:  rgb(197, 197, 197);
+  background-color:  rgb(237, 245, 130);
   width: 100px;
   height: 100px;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
@@ -32,4 +32,6 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  transition: .5s all ease;
+  color: green;
 }

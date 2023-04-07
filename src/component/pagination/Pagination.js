@@ -72,8 +72,7 @@ export const Pagination = (props) => {
   return (
     <div className="pagination-content">
       <div className="pagination-left">
-        <div className="total-items">{total} items</div>
-        <div className="pl-1">
+        <div className="">
           <Select
             name={"cmb_set_limit"}
             id={"cmb_set_limit"}
@@ -88,6 +87,7 @@ export const Pagination = (props) => {
             disabled={false}
           ></Select>
         </div>
+        <div className="total-items">-/- {total}</div>
       </div>
       <div className="pagination-right">
         {data.length > 0 ? (

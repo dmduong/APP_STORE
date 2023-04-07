@@ -2,6 +2,7 @@ import axios from "axios";
 import { showToast } from "../component/toast/Toast";
 import { header } from "./route";
 import { domain } from "./route";
+import { __showLoading } from "./utill";
 
 // [Login]
 const axios_login = async (dataForm) => {
@@ -69,15 +70,17 @@ const axios_infor_user = async (token) => {
 const axios_get_status = async (token, pagination) => {
   let page = pagination.page;
   let limit = pagination.limit;
-
+  __showLoading(true);
   return await axios
     .get(domain.url_get_status(page, limit), {
       headers: header(token),
     })
     .then((response) => {
+      __showLoading(false);
       return response.data;
     })
     .catch((error) => {
+      __showLoading(false);
       showToast("__ERROR_TYPE", error.message);
     });
 };
@@ -98,28 +101,34 @@ const axios_create_status = async (token, data) => {
 
 //[create_status]
 const axios_edit_status = async (token, id) => {
+  __showLoading(true);
   return await axios
     .get(domain.url_edit_status(id), {
       headers: header(token),
     })
     .then((response) => {
+      __showLoading(false);
       return response.data;
     })
     .catch((error) => {
+      __showLoading(false);
       showToast("__ERROR_TYPE", error.message);
     });
 };
 
 //[update_status]
 const axios_update_status = async (token, id, data) => {
+  __showLoading(true);
   return await axios
     .put(domain.url_update_status(id), data, {
       headers: header(token),
     })
     .then((response) => {
+      __showLoading(false);
       return response.data;
     })
     .catch((error) => {
+      __showLoading(false);
       console.log(error);
       showToast("__ERROR_TYPE", error.message);
     });

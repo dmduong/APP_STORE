@@ -1,17 +1,22 @@
-import React from "react";
 import { toast } from "react-toastify";
-import GetHTML from "./GetHTML";
 import Swal from "sweetalert2";
+import {
+  __ERROR_TYPE,
+  __SUCCESS_TYPE,
+  __TOP_RIGHT,
+  __WARNING_TYPE,
+  __INFOR_TYPE,
+} from "../../config/content";
 
 export const showToast = (
-  type = "__SUCCESS_TYPE",
+  type = "__SUCCESS_TYPE" || __SUCCESS_TYPE,
   title = "success",
-  position = "__TOP_RIGHT",
+  position = "__TOP_RIGHT" || __TOP_RIGHT,
   close = 5000
 ) => {
   let position_toast = "";
   switch (position) {
-    case "__TOP_RIGHT":
+    case "__TOP_RIGHT" || __TOP_RIGHT:
       position_toast = "top-right";
       break;
 
@@ -35,14 +40,14 @@ export const showToast = (
         '<div style="display: flex;flex-direction: column; justify-content: start;">' +
         title_s +
         "</div>",
-        showCloseButton: true,
-        showConfirmButton: false,
+      showCloseButton: true,
+      showConfirmButton: false,
     });
     return;
   }
 
   switch (type) {
-    case "__SUCCESS_TYPE":
+    case "__SUCCESS_TYPE" || __SUCCESS_TYPE:
       toast.success(title_toast, {
         position: position_toast,
         autoClose: close,
@@ -54,7 +59,7 @@ export const showToast = (
         theme: "colored",
       });
       break;
-    case "__ERROR_TYPE":
+    case "__ERROR_TYPE" || __ERROR_TYPE:
       toast.error(title_toast, {
         position: position_toast,
         autoClose: close,
@@ -66,7 +71,7 @@ export const showToast = (
         theme: "colored",
       });
       break;
-    case "__WARNING_TYPE":
+    case "__WARNING_TYPE" || __WARNING_TYPE:
       toast.warn(title_toast, {
         position: position_toast,
         autoClose: close,
@@ -79,7 +84,7 @@ export const showToast = (
       });
       break;
 
-    case "__INFOR_TYPE":
+    case "__INFOR_TYPE" || __INFOR_TYPE:
       toast.info(title_toast, {
         position: position_toast,
         autoClose: close,

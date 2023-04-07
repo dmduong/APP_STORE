@@ -51,6 +51,8 @@ import Category from "./pages/category/Category";
 import Product from "./pages/product/Product";
 import ProtectedRouteAdmin from "./ProtectedRouteAdmin";
 import StatusDetail from "./pages/status/StatusDetail";
+import Load from "./Load";
+import Supplier from "./pages/supplier/Supplier";
 
 function Root() {
   const isLoading_redux = useSelector((state) => state.isLoading);
@@ -214,13 +216,23 @@ function Root() {
           >
             <Route element={<ProtectedRouteAdmin isAllowed={!!userToken} />}>
               <Route path="home" element={<Home />} title={"Trang chủ"} />
-              <Route index element={<Dashboard />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="status" element={<Status />} title={"Trạng thái"}>
+              <Route
+                index
+                element={<Dashboard user={user} title={"Dashboard"} />}
+              />
+              <Route
+                path="dashboard"
+                element={<Dashboard user={user} title={"Dashboard"} />}
+              />
+              <Route
+                path="status"
+                element={<Status user={user} title={"Trạng thái"} />}
+              >
                 <Route path=":id" element={<StatusDetail />} />
               </Route>
               <Route path="unit" element={<Unit />} />
               <Route path="category" element={<Category />} />
+              <Route path="supplier" element={<Supplier />} />
               <Route path="product" element={<Product />} />
             </Route>
             <Route path="roles" element={<>Không có quyền</>} />
@@ -231,6 +243,7 @@ function Root() {
       </>
       {/* )} */}
       {isLoading_redux && <Loading></Loading>}
+      {<Load></Load>}
       <ToastContainer
         position="top-right"
         autoClose={5000}

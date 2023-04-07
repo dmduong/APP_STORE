@@ -36,7 +36,7 @@ const ListNormal = (props) => {
     onClickDetail,
   } = props;
   console.log(customColumn.detail_column);
-
+  console.log(pagination);
   const hide_cols_custom = (hide_column) => {
     let hide_cols_new = new Array();
     for (let index = 0; index < hide_column.length; index++) {
@@ -174,7 +174,8 @@ const ListNormal = (props) => {
     element_body = list_new.map((value, keys) => {
       value_new = [...value];
       if (customColumn.stt_column) {
-        value_new.unshift(Array("stt", keys + 1));
+        let stt = (pagination.page + 1) * pagination.limit - pagination.limit;
+        value_new.unshift(Array("stt", stt + (keys + 1)));
       }
 
       if (customColumn.detail_column && customColumn.detail_column.length > 0) {
