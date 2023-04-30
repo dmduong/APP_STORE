@@ -153,15 +153,17 @@ const axios_delete_status = async (token, id) => {
 const axios_get_category = async (token, pagination) => {
   let page = pagination.page;
   let limit = pagination.limit;
-
+  __showLoading(true);
   return await axios
     .get(domain.url_get_category(page, limit), {
       headers: header(token),
     })
     .then((response) => {
+      __showLoading(false);
       return response.data;
     })
     .catch((error) => {
+      __showLoading(false);
       showToast("__ERROR_TYPE", error.message);
     });
 };

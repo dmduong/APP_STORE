@@ -230,9 +230,18 @@ function Root() {
               >
                 <Route path=":id" element={<StatusDetail />} />
               </Route>
-              <Route path="unit" element={<Unit />} />
-              <Route path="category" element={<Category />} />
-              <Route path="supplier" element={<Supplier />} />
+              <Route
+                path="unit"
+                element={<Unit title={"Đơn vị"} user={user} />}
+              />
+              <Route
+                path="category"
+                element={<Category title="Danh mục" user={user} />}
+              />
+              <Route
+                path="supplier"
+                element={<Supplier title="Nhà cung cấp" user={user} />}
+              />
               <Route path="product" element={<Product />} />
             </Route>
             <Route path="roles" element={<>Không có quyền</>} />

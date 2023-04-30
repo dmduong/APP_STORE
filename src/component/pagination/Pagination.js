@@ -7,6 +7,7 @@ import Select from "../select/Select";
 export const Pagination = (props) => {
   const navigate = useNavigate();
   // const [pagination, setPagination] = useState(props.pagination);
+  // console.log(props.pagination, "pagination");
   let { page, pages, limit, total, dataOfPage } = props.pagination;
   const { data } = props;
   //get params in url page

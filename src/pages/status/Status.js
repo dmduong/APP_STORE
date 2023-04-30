@@ -1,32 +1,20 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import "./Status.css";
-import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Checkbox from "../../component/checkbox/Checkbox";
 import { api } from "../../config/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { showToast } from "../../component/toast/Toast";
 import { __showLoading, setTitle, timeToString } from "../../config/utill";
 import Modal from "react-bootstrap/Modal";
-import { FiEdit } from "react-icons/fi";
 import {
   act_setIsCheck,
   act_setIsCheckAll,
   showLoading,
 } from "../../redux/action";
-import Spinners from "../../component/spinner/Spinners";
 import { showConfirm } from "../../component/confirm/Confirm";
-import { Pagination } from "../../component/pagination/Pagination";
 import { useCookies, removeCookie } from "react-cookie";
-import {
-  Link,
-  useNavigate,
-  createSearchParams,
-  useSearchParams,
-  Outlet,
-} from "react-router-dom";
+import { useSearchParams, Outlet } from "react-router-dom";
 import ListNormal from "../../component/List/ListNormal";
 import Placeholders from "../../component/placeholders/Placeholders";
 import ButtonCustom from "../../component/button/Button";
@@ -273,7 +261,7 @@ const Status = (props) => {
       <Outlet></Outlet>
       <div className="mt-1 mb-1 p-2 border rounded d-flex justify-content-between align-items-center">
         <div className="mt-1 mb-2">
-          <h5 className="text-dark text-center mb-0">Status manager</h5>
+          <h5 className="text-dark text-center mb-0">Quản lý {props.title}</h5>
         </div>
         <div>
           <ButtonCustom
@@ -305,7 +293,7 @@ const Status = (props) => {
             data={list}
             pagination={pagination}
             changePages={handleChangePage}
-            hide_column={new Array("_id")}
+            hide_column={new Array("_id", "storeId")}
             id_column={new Array("_id")}
             onClickDetail={handleClickDetail}
             onClickEdit={handleEdit}
@@ -316,7 +304,6 @@ const Status = (props) => {
               detail_column: [
                 {
                   type: "link",
-                  link: "",
                 },
               ],
             }}

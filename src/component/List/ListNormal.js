@@ -35,7 +35,6 @@ const ListNormal = (props) => {
     id_column,
     onClickDetail,
   } = props;
-  console.log(customColumn.detail_column);
   console.log(pagination);
   const hide_cols_custom = (hide_column) => {
     let hide_cols_new = new Array();
@@ -270,7 +269,7 @@ const ListNormal = (props) => {
               return (
                 <td
                   key={index}
-                  className={data[2] ? "text-center " + data[2] : "text-center"}
+                  className={data[2] ? "text-left " + data[2] : "text-left"}
                 >
                   {data[1]}
                 </td>

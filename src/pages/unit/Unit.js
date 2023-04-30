@@ -6,6 +6,8 @@ import {
   showLoading,
   act_setUnit,
   act_setPagination,
+  act_setIsCheck,
+  act_setIsCheckAll,
 } from "../../redux/action";
 import { useNavigate } from "react-router-dom";
 import { useCookies, removeCookie } from "react-cookie";
@@ -13,12 +15,14 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Checkbox from "../../component/checkbox/Checkbox";
-import { timeToString } from "../../config/utill";
+import { setTitle, timeToString } from "../../config/utill";
 import { FiEdit } from "react-icons/fi";
 import { Pagination } from "../../component/pagination/Pagination";
 import Modal from "react-bootstrap/Modal";
 import { showToast } from "../../component/toast/Toast";
 import { showConfirm } from "../../component/confirm/Confirm";
+import Placeholders from "../../component/placeholders/Placeholders";
+import ListNormal from "../../component/List/ListNormal";
 
 const headers = [
   {
@@ -62,12 +66,12 @@ const headers = [
 const Unit = (props) => {
   const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
   const dispatch = useDispatch();
+  const isCheck = useSelector((state) => state.objectsValue.isCheck);
+  const [isLoading, setIsLoading] = useState(true);
   const pagination = useSelector((state) => state.pagination);
   const [lgShow, setLgShow] = useState(false);
   const [lgShowEdit, setLgShowEdit] = useState(false);
   const list = useSelector((state) => state.listUnit);
-  const [isCheckAll, setIsCheckAll] = useState(false);
-  const [isCheck, setIsCheck] = useState([]);
   const userToken = useSelector((state) => {
     if (cookies.token != "") {
       return cookies.token;
@@ -107,41 +111,22 @@ const Unit = (props) => {
   });
 
   const fnc_get_unit = async (token, pagination) => {
-    // dispatch(showLoading(true));
     const response = await api.axios_get_unit(token, pagination);
     if (response.status === 200) {
       const data = [...response.data];
       dispatch(act_setUnit(data));
       dispatch(act_setPagination(response.pagination));
     }
-    // dispatch(showLoading(false));
+    setIsLoading(false);
   };
 
   useEffect(() => {
     fnc_get_unit(userToken, pagination);
     get_status(userToken);
+    setTitle(props.user.storeId.nameStore, props.title);
   }, []);
 
-  const handleSelectAll = (e) => {
-    setIsCheckAll(!isCheckAll);
-    setIsCheck(list.map((li) => li._id));
-    if (isCheckAll) {
-      setIsCheck([]);
-    }
-  };
-
-  const handleClick = (e) => {
-    const { id, checked } = e.target;
-    setIsCheck([...isCheck, id]);
-    if (!checked) {
-      setIsCheck(isCheck.filter((item) => item !== id));
-    }
-  };
-
   const handleChangePage = (pagi) => {
-    dispatch(
-      act_setPagination({ ...pagination, page: pagi.page, limit: pagi.limit })
-    );
     fnc_get_unit(userToken, {
       ...pagination,
       page: pagi.page,
@@ -222,7 +207,8 @@ const Unit = (props) => {
     let res = await api.axios_delete_unit(token, id);
     if (res.status == 200) {
       await fnc_get_unit(token, pagination);
-      setIsCheck([]);
+      dispatch(act_setIsCheck([]));
+      dispatch(act_setIsCheckAll(false));
       showToast("__SUCCESS_TYPE", res.messages);
     } else {
       showToast("__ERROR_TYPE", res.messages);
@@ -306,7 +292,9 @@ const Unit = (props) => {
       <div className="p-1 col-md-12">
         <div className="mt-1 mb-1 p-2 border border-success rounded d-flex justify-content-between align-items-center">
           <div className="mt-1 mb-2">
-            <h5 className="text-success text-center mb-0">Unit manager</h5>
+            <h5 className="text-success text-center mb-0">
+              Quản lý {props.title}
+            </h5>
           </div>
           <div>
             <Button onClick={() => handelOpenModal()} variant="primary">
@@ -319,82 +307,34 @@ const Unit = (props) => {
         </div>
 
         <div className="mt-1 mb-1 border border-secondary rounded">
-          <Table striped bordered hover responsive className="mb-0">
-            <thead>
-              <tr>
-                {headers.map((header, index) => (
-                  <th key={index} className="text-center" width={header.width}>
-                    {header.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {list.length <= 0 ? (
-                <tr>
-                  <td colSpan={headers.length} align="center">
-                    {/* <Spinners></Spinners> */}Data does not exist
-                  </td>
-                </tr>
-              ) : (
-                list.map((value, index) => (
-                  <tr key={value._id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-uppercase">{value.codeUnit}</td>
-                    <td className="">{value.nameUnit}</td>
-                    <td className="">{value.detailUnit}</td>
-                    <td className="text-success text-center">
-                      {value.status.nameStatus}
-                    </td>
-                    <td>{timeToString(value.createdAt)}</td>
-                    <td>{timeToString(value.updatedAt)}</td>
-                    <td className="text-center">
-                      <FiEdit
-                        className="icon-edit"
-                        onClick={() => handleEdit(value._id)}
-                      ></FiEdit>
-                    </td>
-                    <td className="d-flex justify-content-center align-items-center">
-                      <Checkbox
-                        key={value._id}
-                        type="checkbox"
-                        name={"unit_" + value._id}
-                        id={value._id}
-                        handleClick={handleClick}
-                        isChecked={isCheck.includes(value._id)}
-                        label={""}
-                      ></Checkbox>
-                    </td>
-                  </tr>
-                ))
-              )}
-              <tr>
-                <td colSpan={headers.length - 1} align="center">
-                  Select all items
-                </td>
-                <td className="d-flex justify-content-center align-items-center">
-                  <Checkbox
-                    type="checkbox"
-                    name="selectAll"
-                    id="selectAll"
-                    handleClick={handleSelectAll}
-                    isChecked={isCheckAll}
-                    label={""}
-                  ></Checkbox>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={headers.length}>
-                  <Pagination
-                    data={list}
-                    url={"/unit"}
-                    pagination={pagination}
-                    changePage={handleChangePage}
-                  ></Pagination>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          {isLoading ? (
+            <Placeholders
+              type={"table"}
+              numberCols={7}
+              numberRows={7}
+              styleCustom={{
+                background: "rgb(224, 224, 224)",
+                color: "rgb(224, 224, 224)",
+              }}
+            ></Placeholders>
+          ) : (
+            <ListNormal
+              name={"unit"}
+              data={list}
+              pagination={pagination}
+              changePages={handleChangePage}
+              hide_column={new Array("_id", "nameStore")}
+              id_column={new Array("_id")}
+              // onClickDetail={handleClickDetail}
+              onClickEdit={handleEdit}
+              customColumn={{
+                select_column: true,
+                edit_column: true,
+                stt_column: true,
+                detail_column: false,
+              }}
+            ></ListNormal>
+          )}
         </div>
       </div>
 

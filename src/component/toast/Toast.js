@@ -6,18 +6,23 @@ import {
   __TOP_RIGHT,
   __WARNING_TYPE,
   __INFOR_TYPE,
+  __TOP_CENTER,
 } from "../../config/content";
 
 export const showToast = (
   type = "__SUCCESS_TYPE" || __SUCCESS_TYPE,
   title = "success",
-  position = "__TOP_RIGHT" || __TOP_RIGHT,
+  position = "__TOP_CENTER" || __TOP_CENTER,
   close = 5000
 ) => {
   let position_toast = "";
   switch (position) {
     case "__TOP_RIGHT" || __TOP_RIGHT:
       position_toast = "top-right";
+      break;
+
+    case "__TOP_CENTER" || __TOP_CENTER:
+      position_toast = "top-center";
       break;
 
     default:

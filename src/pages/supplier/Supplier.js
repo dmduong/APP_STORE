@@ -4,71 +4,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../config/axios";
 import {
+  act_setIsCheck,
+  act_setIsCheckAll,
   act_setPagination,
   act_setSupplier,
   showLoading,
 } from "../../redux/action";
-import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Checkbox from "../../component/checkbox/Checkbox";
-import { timeToString } from "../../config/utill";
-import { FiEdit } from "react-icons/fi";
-import { Pagination } from "../../component/pagination/Pagination";
+import { setTitle, timeToString } from "../../config/utill";
 import Modal from "react-bootstrap/Modal";
 import { showToast } from "../../component/toast/Toast";
 import { showConfirm } from "../../component/confirm/Confirm";
+import Placeholders from "../../component/placeholders/Placeholders";
+import ListNormal from "../../component/List/ListNormal";
 
-const headers = [
-  {
-    with: "2px",
-    name: "Stt",
-  },
-  {
-    with: "2px",
-    name: "Supplier code",
-  },
-  {
-    with: "",
-    name: "Name supplier",
-  },
-  {
-    with: "",
-    name: "Phone supplier",
-  },
-  {
-    with: "",
-    name: "Address supplier",
-  },
-  {
-    with: "",
-    name: "Status",
-  },
-  {
-    with: "",
-    name: "Create time",
-  },
-  {
-    name: "Update time",
-    with: "",
-  },
-  {
-    name: "Edit",
-    with: "2px",
-  },
-  {
-    name: "Select",
-    with: "2px",
-  },
-];
-
-const Supplier = () => {
+const Supplier = (props) => {
   const dispatch = useDispatch();
   const [cookies, setCookie] = useCookies(["token", "user", "refreshToken"]);
+  const isCheck = useSelector((state) => state.objectsValue.isCheck);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const pagination = useSelector((state) => state.pagination);
-  const [isCheckAll, setIsCheckAll] = useState(false);
-  const [isCheck, setIsCheck] = useState([]);
   const [status, setStatus] = useState([]);
   const [lgShow, setLgShow] = useState(false);
   const [lgShowEdit, setLgShowEdit] = useState(false);
@@ -111,22 +68,6 @@ const Supplier = () => {
     }
   });
 
-  const handleSelectAll = (e) => {
-    setIsCheckAll(!isCheckAll);
-    setIsCheck(list.map((li) => li._id));
-    if (isCheckAll) {
-      setIsCheck([]);
-    }
-  };
-
-  const handleClick = (e) => {
-    const { id, checked } = e.target;
-    setIsCheck([...isCheck, id]);
-    if (!checked) {
-      setIsCheck(isCheck.filter((item) => item !== id));
-    }
-  };
-
   const list = useSelector((state) => state.listSupplier);
 
   const fnc_get_supplier = async (token, pagi) => {
@@ -136,6 +77,7 @@ const Supplier = () => {
       dispatch(act_setSupplier(dataNew));
       dispatch(act_setPagination(response.data.pagination));
     }
+    setLoading(false);
   };
 
   const get_status = async (token) => {
@@ -151,12 +93,10 @@ const Supplier = () => {
   useEffect(() => {
     fnc_get_supplier(userToken, pagination);
     get_status(userToken);
+    setTitle(props.user.storeId.nameStore, props.title);
   }, []);
 
   const handleChangePage = (pagi) => {
-    dispatch(
-      act_setPagination({ ...pagination, page: pagi.page, limit: pagi.limit })
-    );
     fnc_get_supplier(userToken, {
       ...pagination,
       page: pagi.page,
@@ -229,7 +169,8 @@ const Supplier = () => {
     let res = await api.axios_delete_supplier(token, id);
     if (res.status == 200) {
       await fnc_get_supplier(token, pagination);
-      setIsCheck([]);
+      dispatch(act_setIsCheck([]));
+      dispatch(act_setIsCheckAll(false));
       showToast("__SUCCESS_TYPE", res.messages);
     } else {
       showToast("__ERROR_TYPE", res.messages);
@@ -317,7 +258,9 @@ const Supplier = () => {
       <div className="p-1 col-md-12">
         <div className="mt-1 mb-1 p-2 border border-success rounded d-flex justify-content-between align-items-center">
           <div className="mt-1 mb-2">
-            <h5 className="text-success text-center mb-0">Supplier manager</h5>
+            <h5 className="text-success text-center mb-0">
+              Quản lý {props.title}
+            </h5>
           </div>
           <div>
             <Button onClick={() => handelOpenModal()} variant="primary">
@@ -330,83 +273,34 @@ const Supplier = () => {
         </div>
 
         <div className="mt-1 mb-1 border border-secondary rounded">
-          <Table striped bordered hover responsive className="mb-0">
-            <thead>
-              <tr>
-                {headers.map((header, index) => (
-                  <th key={index} className="text-center" width={header.width}>
-                    {header.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {list.length <= 0 ? (
-                <tr>
-                  <td colSpan={headers.length} align="center">
-                    {/* <Spinners></Spinners> */}Data does not exist
-                  </td>
-                </tr>
-              ) : (
-                list.map((value, index) => (
-                  <tr key={value._id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-uppercase">{value.codeSupplier}</td>
-                    <td className="">{value.nameSupplier}</td>
-                    <td className="">{value.phoneSupplier}</td>
-                    <td className="">{value.addressSupplier}</td>
-                    <td className="text-success text-center">
-                      {value.statusId ? value.statusId.nameStatus : ""}
-                    </td>
-                    <td>{timeToString(value.createdAt)}</td>
-                    <td>{timeToString(value.updatedAt)}</td>
-                    <td className="text-center">
-                      <FiEdit
-                        className="icon-edit"
-                        onClick={() => handleEdit(value._id)}
-                      ></FiEdit>
-                    </td>
-                    <td className="d-flex justify-content-center align-items-center">
-                      <Checkbox
-                        key={value._id}
-                        type="checkbox"
-                        name={"supplier_" + value._id}
-                        id={value._id}
-                        handleClick={handleClick}
-                        isChecked={isCheck.includes(value._id)}
-                        label={""}
-                      ></Checkbox>
-                    </td>
-                  </tr>
-                ))
-              )}
-              <tr>
-                <td colSpan={headers.length - 1} align="center">
-                  Select all items
-                </td>
-                <td className="d-flex justify-content-center align-items-center">
-                  <Checkbox
-                    type="checkbox"
-                    name="selectAll"
-                    id="selectAll"
-                    handleClick={handleSelectAll}
-                    isChecked={isCheckAll}
-                    label={""}
-                  ></Checkbox>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={headers.length}>
-                  <Pagination
-                    data={list}
-                    url={"/supplier"}
-                    pagination={pagination}
-                    changePage={handleChangePage}
-                  ></Pagination>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          {loading ? (
+            <Placeholders
+              type={"table"}
+              numberCols={6}
+              numberRows={6}
+              styleCustom={{
+                background: "rgb(224, 224, 224)",
+                color: "rgb(224, 224, 224)",
+              }}
+            ></Placeholders>
+          ) : (
+            <ListNormal
+              name={"status"}
+              data={list}
+              pagination={pagination}
+              changePages={handleChangePage}
+              hide_column={new Array("_id", "storeId")}
+              id_column={new Array("_id")}
+              // onClickDetail={handleClickDetail}
+              onClickEdit={handleEdit}
+              customColumn={{
+                select_column: true,
+                edit_column: true,
+                stt_column: true,
+                detail_column: false,
+              }}
+            ></ListNormal>
+          )}
         </div>
       </div>
 
