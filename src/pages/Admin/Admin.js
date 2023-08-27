@@ -145,7 +145,7 @@ function Admin(props) {
                     <div
                       className="left-home"
                       style={{
-                        width: open ? "23%" : "0%",
+                        width: open ? "17%" : "0%",
                         opacity: open ? "1" : "0.5",
                       }}
                     >
@@ -187,7 +187,7 @@ function Admin(props) {
                     </div>
                     <div
                       className="right-home"
-                      style={{ width: open ? "77%" : "100%" }}
+                      style={{ width: open ? "83%" : "100%" }}
                     >
                       <div className="top-right-pages">
                         <Navbar className="h-100" bg="light" expand="lg">

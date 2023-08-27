@@ -21,6 +21,7 @@ export const domain = {
   url_logout: `${Url}/${version}/me/logout`,
   url_logout_all: `${Url}/${version}/me/logoutAll`,
   url_info_user: `${Url}/${version}/me/informations`,
+  url_all_status: `${Url}/${version}/inventory/status/all`,
   url_get_status: (page, limit) =>
     `${Url}/${version}/inventory/status/getAll/${page}/${limit}`,
   url_create_status: `${Url}/${version}/inventory/status/store`,
@@ -29,7 +30,6 @@ export const domain = {
   url_delete_status: (id) => `${Url}/${version}/inventory/status/delete/${id}`,
   url_get_category: (page, limit) =>
     `${Url}/${version}/inventory/category/getAll/${page}/${limit}`,
-  url_all_status: `${Url}/${version}/inventory/status/all`,
   url_create_category: `${Url}/${version}/inventory/category/store`,
   url_delete_category: (id) =>
     `${Url}/${version}/inventory//category/delete/${id}`,

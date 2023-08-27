@@ -242,7 +242,10 @@ function Root() {
                 path="supplier"
                 element={<Supplier title="Nhà cung cấp" user={user} />}
               />
-              <Route path="product" element={<Product />} />
+              <Route
+                path="product"
+                element={<Product title="Hàng hóa" user={user} />}
+              />
             </Route>
             <Route path="roles" element={<>Không có quyền</>} />
             <Route path="*" element={<p>There's nothing here: 404 new!</p>} />

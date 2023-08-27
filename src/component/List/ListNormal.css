@@ -18,3 +18,31 @@
     font-size: 25px;
     transition: .5s all ease;
 }
+
+.icon-image-view {
+    cursor: pointer;
+}
+
+.icon-image:hover {
+    color: rgb(3, 63, 3);
+    font-size: 25px;
+    transition: .5s all ease;
+}
+
+.image  {
+    width: 210px;
+    height: 250px;
+    object-fit: cover;
+    margin: 2px;
+    border-radius: 10px;
+}
+
+.body-image {
+    height: 500px;
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-wrap: wrap;
+}

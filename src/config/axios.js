@@ -144,7 +144,6 @@ const axios_delete_status = async (token, id) => {
       return response.data;
     })
     .catch((error) => {
-      console.log(error);
       showToast("__ERROR_TYPE", error.message);
     });
 };
@@ -170,6 +169,7 @@ const axios_get_category = async (token, pagination) => {
 
 //[get all category]
 const axios_all_status = async (token) => {
+  console.log(domain.url_all_status, 1);
   return await axios
     .get(domain.url_all_status, {
       headers: header(token),

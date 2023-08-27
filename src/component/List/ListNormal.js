@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "./ListNormal.css";
-import { Table } from "react-bootstrap";
-import { timeToString, uniqueArray } from "../../config/utill";
+import { Modal, Table } from "react-bootstrap";
+import { isset, timeToString, uniqueArray } from "../../config/utill";
 import Checkbox from "../checkbox/Checkbox";
 import { FiEdit, FiEye } from "react-icons/fi";
+import { RxMaskOff } from "react-icons/rx";
 import { Pagination } from "../pagination/Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,9 +17,12 @@ import Spinners from "../spinner/Spinners";
 import { propTypes } from "react-bootstrap/esm/Image";
 import Placeholders from "../placeholders/Placeholders";
 import { Link } from "react-router-dom";
+import { Url } from "../../config/route";
 
 const ListNormal = (props) => {
   const dispatch = useDispatch();
+  const [lgShow, setLgShow] = useState(false);
+  const [imageItems, setImageItems] = useState([]);
   const isCheck = useSelector((state) => state.objectsValue.isCheck);
   const isCheckAll = useSelector((state) => state.objectsValue.isCheckAll);
   const h_id = useSelector((state) => state.objectsValue.h_id);
@@ -35,16 +39,30 @@ const ListNormal = (props) => {
     id_column,
     onClickDetail,
   } = props;
-  console.log(pagination);
+
+  let image_colums = "";
+  if (customColumn.image_column) {
+    image_colums = customColumn.image_column;
+  } else {
+    image_colums = "";
+  }
   const hide_cols_custom = (hide_column) => {
+    let array_hide = [...hide_column];
     let hide_cols_new = new Array();
-    for (let index = 0; index < hide_column.length; index++) {
-      const element = hide_column[index];
+    for (let index = 0; index < array_hide.length; index++) {
+      const element = array_hide[index];
       hide_cols_new[element] = element;
     }
-
     return hide_cols_new;
   };
+
+  if (
+    isset(customColumn.displayArray) &&
+    customColumn.displayArray.length > 0
+  ) {
+    hide_column = hide_column.concat(customColumn.displayArray);
+  }
+
   let hideCols = hide_cols_custom(hide_column);
   const handleChangePage = (pagi) => {
     changePages(pagi);
@@ -57,6 +75,12 @@ const ListNormal = (props) => {
 
   const goToDetail = (id) => {
     onClickDetail(id);
+  };
+
+  const handleOpenImage = async (image) => {
+    let value = [...image];
+    setImageItems(value);
+    setLgShow(true);
   };
 
   const handleSelectAll = (e) => {
@@ -98,7 +122,6 @@ const ListNormal = (props) => {
     return count > 0 ? true : false;
   }
 
-  console.log(data);
   let element_header = "";
   element_header = "";
   let header = new Array();
@@ -115,6 +138,10 @@ const ListNormal = (props) => {
       if (!check_arr("_stt", header)) {
         header.unshift(Array("_stt", "Stt"));
       }
+    }
+
+    if (image_colums) {
+      header = [...header, Array("_" + image_colums, "Hình ảnh")];
     }
 
     if (customColumn.detail_column && customColumn.detail_column.length > 0) {
@@ -177,6 +204,13 @@ const ListNormal = (props) => {
         value_new.unshift(Array("stt", stt + (keys + 1)));
       }
 
+      if (image_colums) {
+        value_new = [
+          ...value_new,
+          Array("icon_" + image_colums, "image_" + image_colums),
+        ];
+      }
+
       if (customColumn.detail_column && customColumn.detail_column.length > 0) {
         value_new = [...value_new, Array("icon_detail", "detail")];
       }
@@ -196,6 +230,7 @@ const ListNormal = (props) => {
       }
 
       let arr_cols_id = new Array();
+      let image = new Array();
       return (
         <tr key={keys}>
           {value_new.map((data, index) => {
@@ -207,6 +242,25 @@ const ListNormal = (props) => {
               id_cols_custom.push(arr_cols_id);
             }
             let key_col = value_new[index][0];
+
+            if (data[0] == image_colums) {
+              image = data[1];
+            }
+
+            if (data[0] == "icon_" + image_colums) {
+              return (
+                <td className="text-center" key={index}>
+                  {" "}
+                  <div
+                    className="icon-image-view"
+                    onClick={() => handleOpenImage(image)}
+                  >
+                    {" "}
+                    <RxMaskOff className="icon-image"></RxMaskOff>
+                  </div>
+                </td>
+              );
+            }
 
             if (data[0] == "icon_detail") {
               if (customColumn.detail_column[0].type === "link") {
@@ -335,7 +389,39 @@ const ListNormal = (props) => {
     </Table>
   );
 
-  return <div>{content}</div>;
+  return (
+    <div>
+      {content}
+
+      <>
+        <Modal
+          size="lg"
+          show={lgShow}
+          onHide={() => setLgShow(false)}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title
+              className="text-center"
+              id="example-modal-sizes-title-lg"
+            >
+              Hình ảnh
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="body-image">
+            {imageItems.map((data, index) => {
+              let values = Object.values(data);
+              return (
+                <div className="items-image" key={index}>
+                  <img className="image" src={Url + values[0]} />
+                </div>
+              );
+            })}
+          </Modal.Body>
+        </Modal>
+      </>
+    </div>
+  );
 };
 
 ListNormal.propTypes = {
@@ -352,6 +438,8 @@ ListNormal.defaultProps = {
     edit_column: true,
     stt_column: true,
     detail_column: false,
+    displayArray: [],
+    image_column: false,
   },
 
   name: "list",

@@ -124,8 +124,10 @@ const Category = (props) => {
 
   const get_status = async (token) => {
     const res = await api.axios_all_status(token);
+    console.log(res, 2);
     if (res.status == 200) {
       const dataNew = [...res.data];
+      console.log(dataNew);
       setStatus(dataNew);
     } else {
       setStatus([]);
@@ -241,6 +243,7 @@ const Category = (props) => {
 
   const handleEdit = async (id) => {
     dispatch(showLoading(true));
+    await get_status(userToken);
     await edit_category(userToken, id);
     setReadOnly({
       ...readOnly,
@@ -290,7 +293,7 @@ const Category = (props) => {
   };
 
   const handleClickDetail = () => {};
-
+  console.log(status);
   return (
     <>
       <div className="p-1 col-md-12">

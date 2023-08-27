@@ -301,11 +301,7 @@ const Status = (props) => {
               select_column: true,
               edit_column: true,
               stt_column: true,
-              detail_column: [
-                {
-                  type: "link",
-                },
-              ],
+              detail_column: false,
             }}
           ></ListNormal>
         )}
